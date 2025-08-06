@@ -60,16 +60,11 @@ class DomainResource extends Resource
                     ->label(__('Enterprise'))
                     ->options(Client::pluck('name', 'id'))
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('host_user')
-                    ->label(__('Username'))
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('host_password')
-                    ->label(__('Password'))
-                    ->password()
-                    ->columnSpanFull()
-                    ->revealable(true),
                 Forms\Components\Toggle::make('is_third_party')
-                    ->label(__('Third Party Hosting')),
+                    ->label(__('Third Party Hosting'))
+                    ->inline(false),
+                Forms\Components\TextInput::make('register_account')
+                    ->label(__('Account')),
             ]);
     }
 
@@ -93,16 +88,11 @@ class DomainResource extends Resource
                     ->label(__('Last Updated'))
                     ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\ColumnGroup::make(__('Hosting'), [
-                    Tables\Columns\ToggleColumn::make('is_third_party')
-                        ->label(__('Third Party Hosting'))
-                        ->alignCenter(),
-                    Tables\Columns\TextColumn::make('host_user')
-                        ->label(__('Username')),
-                    Tables\Columns\TextColumn::make('host_password')
-                        ->label(__('Password'))
-                        ->formatStateUsing(fn($state)=> str_repeat('*', Str::length($state))),
-                ]),
+                Tables\Columns\ToggleColumn::make('is_third_party')
+                    ->label(__('Third Party Domain'))
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('register_account')
+                    ->label(__('Account')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

@@ -2,6 +2,10 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\DomainExpirationWidget;
+use App\Filament\Widgets\ExpiringDomainsTableWidget;
+use App\Filament\Widgets\ExpiringHostingsTableWidget;
+use App\Filament\Widgets\HostingExpirationWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -36,8 +40,12 @@ class AdminPanelProvider extends PanelProvider
             ->pages([
                 Pages\Dashboard::class,
             ])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
+//            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
+                DomainExpirationWidget::class,
+                HostingExpirationWidget::class,
+                ExpiringDomainsTableWidget::class,
+                ExpiringHostingsTableWidget::class,
 //                Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
             ])
