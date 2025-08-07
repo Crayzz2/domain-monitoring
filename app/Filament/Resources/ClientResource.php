@@ -55,6 +55,10 @@ class ClientResource extends Resource
                     ->email()
                     ->required()
                     ->columnSpanFull(),
+                Forms\Components\TextInput::make('phone')
+                    ->label(__('Phone'))
+                    ->mask('(99) 99999-9999')
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -71,11 +75,20 @@ class ClientResource extends Resource
                 Tables\Columns\TextColumn::make('email')
                     ->label(__('Email'))
                     ->searchable(),
+                Tables\Columns\TextColumn::make('phone')
+                    ->label(__('Phone'))
+                    ->searchable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\Action::make('whatsapp')
+                    ->label('Whatsapp')
+                    ->url(function($record){
+//                        'https://wa.me/55'
+                    }),
+//                    ->url('https://wa.me/whatsappphonenumber/?text=urlencodedtext'),
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
             ])
