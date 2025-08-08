@@ -35,6 +35,32 @@ class HostingResource extends Resource
     {
         return __('Hostings');
     }
+    public static function getNavigationBadge(): ?string
+    {
+        $expired = Hosting::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))->count();
+        $toExpire = Hosting::where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
+            ->where('expiration_date', '<=', now('America/Sao_Paulo')->addMonths(1)->format('Y-m-d'))->count();
+        if($expired > 0){
+            return 'Vencidos ('.$expired.')';
+        } else if($toExpire > 0){
+            return 'A Vencer ('.$toExpire.')';
+        }
+        return null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        $expired = Hosting::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))->count();
+        $toExpire = Hosting::where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
+            ->where('expiration_date', '<=', now('America/Sao_Paulo')->addMonths(1)->format('Y-m-d'))->count();
+        if($expired > 0){
+            return 'danger';
+        } else if($toExpire > 0){
+            return 'warning';
+        } else {
+            return 'success';
+        }
+    }
 
     public static function form(Form $form): Form
     {
@@ -140,7 +166,8 @@ class HostingResource extends Resource
                     Tables\Actions\EditAction::make()
                         ->modalWidth('md')
                         ->color('warning'),
-                    Tables\Actions\DeleteAction::make()
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make()
                 ]),
             ]);
     }

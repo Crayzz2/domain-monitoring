@@ -17,7 +17,7 @@ class ExpiringDomainsTableWidget extends BaseWidget
     {
         return $table
             ->query(
-                Domain::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
+                Domain::where('expiration_date', '<' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')

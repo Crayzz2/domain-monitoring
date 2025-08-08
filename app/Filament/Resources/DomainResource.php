@@ -45,7 +45,29 @@ class DomainResource extends Resource
     }
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        $expired = Domain::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))->count();
+        $toExpire = Domain::where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
+            ->where('expiration_date', '<=', now('America/Sao_Paulo')->addMonths(2)->format('Y-m-d'))->count();
+        if($expired > 0){
+            return 'Vencidos ('.$expired.')';
+        } else if($toExpire > 0){
+            return 'A Vencer ('.$toExpire.')';
+        }
+        return null;
+    }
+
+    public static function getNavigationBadgeColor(): string|array|null
+    {
+        $expired = Domain::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))->count();
+        $toExpire = Domain::where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
+            ->where('expiration_date', '<=', now('America/Sao_Paulo')->addMonths(2)->format('Y-m-d'))->count();
+        if($expired > 0){
+            return 'danger';
+        } else if($toExpire > 0){
+            return 'warning';
+        } else {
+            return 'success';
+        }
     }
 
     public static function form(Form $form): Form
@@ -122,6 +144,7 @@ class DomainResource extends Resource
                         ->color('warning')
                         ->icon('heroicon-o-arrow-path'),
                     Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\RestoreAction::make()
                 ]),
             ])
             ->bulkActions([]);

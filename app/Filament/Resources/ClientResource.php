@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
+use App\Models\Configuration;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -85,10 +86,17 @@ class ClientResource extends Resource
             ->actions([
                 Tables\Actions\Action::make('whatsapp')
                     ->label('Whatsapp')
+                    ->hidden(fn($record) => !$record->phone)
                     ->url(function($record){
-//                        'https://wa.me/55'
-                    }),
-//                    ->url('https://wa.me/whatsappphonenumber/?text=urlencodedtext'),
+                        $configuration = Configuration::first();
+                        $phone = substr($record->phone, 1, 2) . substr($record->phone, 5, 5) . substr($record->phone, 11);
+                        if($configuration->whatsapp_text){
+                            return 'https://wa.me/55' . $phone . '/?text='. urlencode('Olá, boa tarde! Gostaria de uma informação, pode me ajudar?');
+                        } else {
+                            return 'https://wa.me/55' . $phone;
+                        }
+                    })
+                ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
             ])

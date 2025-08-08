@@ -13,7 +13,7 @@ class StatusPage extends Page
 
     protected static string $view = 'filament.pages.status-page';
 
-    protected static ?string $title = 'Status';
+    protected static ?string $title = 'Relatório de Status';
 
     public static function getNavigationGroup(): string
     {

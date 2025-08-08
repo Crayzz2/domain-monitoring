@@ -12,17 +12,16 @@ class DomainExpirationWidget extends BaseWidget
     {
         return [
             Stat::make('Domínios a vencer em 90 Dias', function(){
-                return Domain::where('expiration_date', '>' ,now('America/Sao_Paulo')->addMonths(2)->format('Y-m-d'))
-                    ->where('expiration_date', '<=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
-                    ->count();
-            }),
-            Stat::make('Domínios a vencer em 60 Dias', function(){
-                return Domain::where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
-                    ->where('expiration_date', '<=' ,now('America/Sao_Paulo')->addMonths(2)->format('Y-m-d'))
+                return Domain::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
+                    ->where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
                     ->count();
             }),
             Stat::make('Domínios Normalizados', function(){
                 return Domain::where('expiration_date', '>=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))->count();
+            }),
+            Stat::make('Domínios Vencidas', function(){
+                return Domain::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))
+                    ->count();
             }),
         ];
     }
