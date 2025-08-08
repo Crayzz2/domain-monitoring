@@ -3,6 +3,7 @@
 use App\Http\Controllers\UpdateExpiresDateController;
 use App\Models\Domain;
 use App\Models\Configuration;
+use App\Models\Hosting;
 use Filament\Notifications\Notification;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -17,30 +18,56 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::call(function(){
-    $configuration = Configuration::first();
-    if(!$configuration->notification_receive_email) {
-        return;
+    $domains = Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
+        ->where('expiration_date', '>', now('America/Sao_Paulo'))->get();
+    $hostings = Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
+        ->where('expiration_date', '>', now('America/Sao_Paulo'))->get();
+    $html = '<h1>Resumo dos próximos 90 dias</h1><br>
+                                 <h2>Domínios</h2>
+                                 <table border=1>
+                                 <thead>
+                                    <tr>
+                                        <td>Domínio</td>
+                                        <td>Data de Expiração</td>
+                                        <td>Cliente</td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>';
+
+    foreach($domains as $domain){
+        $client_name = $domain->client_id ? $domain->client->name : "";
+        $html .= '<tr>
+                                        <td>'. $domain->name .'</td>
+                                        <td>'. Carbon::createFromDate($domain->expiration_date)->format('d/m/Y') .'</td>
+                                        <td>'. $client_name .' </td>
+                                      </tr>';
     }
-    foreach(Domain::all() as $domain){
-        if(!$domain->expiration_date){
-            return;
-        }
+    $html .= '</tbody></table><br><br>';
 
-        $diff = Carbon::parse(Carbon::now('America/Sao_Paulo')->format('Y-m-d'))->diffInDays(Carbon::parse($domain->expiration_date));
 
-        if($diff == 20){
-            Resend::emails()->send([
-                'from' => env('APP_NAME').' <'.env('MAIL_FROM_ADDRESS').'>',
-                'to' => $configuration->notification_receive_email,
-                'subject' => 'Domínio Prestes a Expirar',
-                'html' => '<h3>O Domínio ' . $domain->name . ' vai expirar em 20 dias.</h3><p>Não se esqueça de entrar em contato com o dono do domínio</p>'
-            ]);
-        }
+    $html .= '<h2>Hospedagens</h2>
+                                 <table border=1>
+                                 <thead>
+                                    <tr>
+                                        <td>Cliente</td>
+                                        <td>Data de Expiração</td>
+                                    </tr>
+                                 </thead>
+                                 <tbody>';
 
-        if($diff <= 0){
-            $update = new UpdateExpiresDateController();
-            $update->update($domain);
-        }
+    foreach($hostings as $hosting){
+        $client_name = $hosting->client_id ? $hosting->client->name : "";
+        $html .= '<tr>
+                                        <td>'. $client_name .' </td>
+                                        <td>'. Carbon::createFromDate($hosting->expiration_date)->format('d/m/Y') .'</td>
+                                      </tr>';
     }
+    $html .= '</tbody></table>';
 
-})->daily();
+    Resend::emails()->send([
+        'from' => env('APP_NAME').' <'.env('MAIL_FROM_ADDRESS').'>',
+        'to' => 'thiago.lacerda.fazzolo@gmail.com',
+        'subject' => 'Relatório dos próximos 90 dias',
+        'html' => Str::squish($html)
+    ]);
+})->monthly();

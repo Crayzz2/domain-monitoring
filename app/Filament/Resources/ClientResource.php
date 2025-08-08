@@ -6,6 +6,9 @@ use App\Filament\Resources\ClientResource\Pages;
 use App\Filament\Resources\ClientResource\RelationManagers;
 use App\Models\Client;
 use App\Models\Configuration;
+use App\Models\Domain;
+use App\Models\Hosting;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -14,6 +17,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
+use Resend\Laravel\Facades\Resend;
 
 class ClientResource extends Resource
 {
@@ -99,6 +104,10 @@ class ClientResource extends Resource
                 ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
+                Tables\Actions\Action::make('test')
+                    ->action(function(){
+
+                    }),
             ])
             ->bulkActions([]);
     }

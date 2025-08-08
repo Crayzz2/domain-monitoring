@@ -3,9 +3,11 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Widgets\DomainExpirationWidget;
+use App\Filament\Widgets\DomainStatusChart;
 use App\Filament\Widgets\ExpiringDomainsTableWidget;
 use App\Filament\Widgets\ExpiringHostingsTableWidget;
 use App\Filament\Widgets\HostingExpirationWidget;
+use App\Filament\Widgets\HostingStatusChart;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -46,6 +48,8 @@ class AdminPanelProvider extends PanelProvider
                 HostingExpirationWidget::class,
                 ExpiringDomainsTableWidget::class,
                 ExpiringHostingsTableWidget::class,
+                DomainStatusChart::class,
+                HostingStatusChart::class,
 //                Widgets\AccountWidget::class,
 //                Widgets\FilamentInfoWidget::class,
             ])
