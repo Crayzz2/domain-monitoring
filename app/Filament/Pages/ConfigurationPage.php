@@ -48,6 +48,8 @@ class ConfigurationPage extends Page implements HasForms
             ->schema([
                 Forms\Components\TextInput::make('notification_receive_email')
                     ->label(__('Notification Recieve Email')),
+                Forms\Components\MarkdownEditor::make('whatsapp_message')
+                    ->label(__('WhatsApp Message')),
             ])
             ->statePath('data');
     }
@@ -66,6 +68,7 @@ class ConfigurationPage extends Page implements HasForms
         try {
             $data = $this->form->getState();
             $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : null;
+            $data['whatsapp_message'] ? $this->configuration->whatsapp_message = $data['whatsapp_message'] : null;
             $this->configuration->save();
             Notification::make('success')
                 ->success()

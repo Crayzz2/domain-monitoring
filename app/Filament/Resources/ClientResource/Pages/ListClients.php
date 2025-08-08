@@ -14,10 +14,6 @@ class ListClients extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('print')
-                ->icon('heroicon-o-arrow-down-tray')
-                ->label(__('Summary'))
-                ->url('/print'),
             Actions\CreateAction::make()
                 ->modalWidth('md'),
         ];

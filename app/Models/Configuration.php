@@ -11,5 +11,6 @@ class Configuration extends Model
 
     protected $fillable = [
         'notification_receive_email',
+        'whatsapp_message'
     ];
 }

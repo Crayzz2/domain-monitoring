@@ -95,8 +95,8 @@ class ClientResource extends Resource
                     ->url(function($record){
                         $configuration = Configuration::first();
                         $phone = substr($record->phone, 1, 2) . substr($record->phone, 5, 5) . substr($record->phone, 11);
-                        if($configuration->whatsapp_text){
-                            return 'https://wa.me/55' . $phone . '/?text='. urlencode('Olá, boa tarde! Gostaria de uma informação, pode me ajudar?');
+                        if($configuration->whatsapp_message){
+                            return 'https://wa.me/55' . $phone . '/?text='. urlencode($configuration->whatsapp_message);
                         } else {
                             return 'https://wa.me/55' . $phone;
                         }
