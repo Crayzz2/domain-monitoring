@@ -49,7 +49,7 @@ class ConfigurationPage extends Page implements HasForms
                 Forms\Components\TextInput::make('notification_receive_email')
                     ->label(__('Notification Recieve Email')),
                 Forms\Components\MarkdownEditor::make('whatsapp_message')
-                    ->label(__('WhatsApp Message')),
+                    ->label(__('Whatsapp Default Message')),
             ])
             ->statePath('data');
     }

@@ -32,7 +32,7 @@ class DomainResource extends Resource
 
     public static function getNavigationGroup(): string
     {
-        return __('General');
+        return __('Hosting/Domain');
     }
     public static function getNavigationLabel(): string
     {

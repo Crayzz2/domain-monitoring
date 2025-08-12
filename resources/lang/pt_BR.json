@@ -41,5 +41,9 @@
     "Phone": "Telefone",
     "Domain Status": "Status dos Domínios",
     "Hosting Status": "Status das Hospedagens",
-    "Summary": "Relatório"
+    "Summary": "Relatório",
+    "Whatsapp Default Message": "Mensagem Padrão do Whatsapp",
+    "Message": "Mensagem",
+    "Hosting/Domain": "Hospedagem/Domínio",
+    "User": "Usuário"
 }

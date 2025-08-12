@@ -31,7 +31,7 @@ class ClientResource extends Resource
 
     public static function getNavigationGroup(): string
     {
-        return __('General');
+        return __('Social');
     }
 
     public static function getNavigationLabel(): string
@@ -90,7 +90,8 @@ class ClientResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('whatsapp')
-                    ->label('Whatsapp')
+                    ->label(__('Message'))
+                    ->icon('heroicon-o-chat-bubble-bottom-center-text')
                     ->hidden(fn($record) => !$record->phone)
                     ->url(function($record){
                         $configuration = Configuration::first();
@@ -104,10 +105,6 @@ class ClientResource extends Resource
                 ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
-                Tables\Actions\Action::make('test')
-                    ->action(function(){
-
-                    }),
             ])
             ->bulkActions([]);
     }

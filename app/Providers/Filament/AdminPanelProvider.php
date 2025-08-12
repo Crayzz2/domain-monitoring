@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Althinect\FilamentSpatieRolesPermissions\FilamentSpatieRolesPermissionsPlugin;
 use App\Filament\Widgets\DomainExpirationWidget;
 use App\Filament\Widgets\DomainStatusChart;
 use App\Filament\Widgets\ExpiringDomainsTableWidget;
@@ -75,6 +76,7 @@ class AdminPanelProvider extends PanelProvider
                     ->label('General'),
                 NavigationGroup::make()
                     ->label(fn (): string => __('Settings')),
-            ]);
+            ])
+            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
     }
 }
