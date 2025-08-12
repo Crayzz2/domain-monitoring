@@ -51,6 +51,11 @@ class UserResource extends Resource
                     ->revealable()
                     ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                     ->dehydrated(fn ($state) => filled($state)),
+                Forms\Components\Select::make('roles')
+                    ->label(__('Roles'))
+                    ->multiple()
+                    ->relationship('roles', 'name')
+                    ->columnSpanFull()
             ]);
     }
 

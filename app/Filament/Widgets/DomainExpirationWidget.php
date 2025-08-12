@@ -8,6 +8,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class DomainExpirationWidget extends BaseWidget
 {
+    public static function canView(): bool
+    {
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+    }
     protected function getStats(): array
     {
         return [

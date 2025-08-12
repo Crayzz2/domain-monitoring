@@ -9,6 +9,10 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class ExpiringDomainsTableWidget extends BaseWidget
 {
+    public static function canView(): bool
+    {
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+    }
     protected int | string | array $columnSpan = 'full';
 
     protected static ?string $heading = 'Domínios Expirando nos Próximos 90 Dias';

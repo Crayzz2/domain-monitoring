@@ -24,6 +24,11 @@ class ConfigurationPage extends Page implements HasForms
 
     protected static ?int $navigationSort = 2;
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('Configuração');
+    }
+
 
     public static function getNavigationGroup(): string
     {

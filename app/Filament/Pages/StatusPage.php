@@ -15,6 +15,10 @@ class StatusPage extends Page
 
     protected static ?string $title = 'Relatório de Status';
 
+    public static function canAccess(): bool
+    {
+        return auth()->user()->hasRole('Relatório de Status');
+    }
     public static function getNavigationGroup(): string
     {
         return __('General');

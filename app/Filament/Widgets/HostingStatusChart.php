@@ -9,6 +9,10 @@ use Illuminate\Contracts\Support\Htmlable;
 
 class HostingStatusChart extends ChartWidget
 {
+    public static function canView(): bool
+    {
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+    }
     public function getHeading(): string|Htmlable|null
     {
         return __('Hosting Status');

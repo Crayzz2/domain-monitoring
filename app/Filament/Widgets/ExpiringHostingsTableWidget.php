@@ -9,6 +9,10 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class ExpiringHostingsTableWidget extends BaseWidget
 {
+    public static function canView(): bool
+    {
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+    }
     protected int | string | array $columnSpan = 'full';
 
     protected static ?string $heading = 'Hospedagens Expirando nos Próximos 90 Dias';
