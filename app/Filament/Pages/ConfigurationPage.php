@@ -26,7 +26,7 @@ class ConfigurationPage extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('Configuração');
+        return auth()->user()->hasAnyRole(['Super Admin', 'Configuração']);
     }
 
 

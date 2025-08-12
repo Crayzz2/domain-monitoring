@@ -17,7 +17,7 @@ class StatusPage extends Page
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasRole('Relatório de Status');
+        return auth()->user()->hasAnyRole(['Super Admin', 'Relatório de Status']);
     }
     public static function getNavigationGroup(): string
     {
