@@ -10,7 +10,7 @@ class HostingExpirationWidget extends BaseWidget
 {
     public static function canView(): bool
     {
-        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle', 'Listar', 'Editar']);
     }
     protected function getStats(): array
     {

@@ -11,7 +11,7 @@ class DomainStatusChart extends ChartWidget
 {
     public static function canView(): bool
     {
-        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle', 'Listar', 'Editar']);
     }
     public function getHeading(): string|Htmlable|null
     {

@@ -64,7 +64,7 @@ class DomainResource extends Resource
         if($expired > 0){
             return 'danger';
         } else if($toExpire > 0){
-            return 'warning';
+            return 'primary';
         } else {
             return 'success';
         }
@@ -134,8 +134,17 @@ class DomainResource extends Resource
                     Tables\Actions\Action::make('whatsapp')
                         ->label(__('Message'))
                         ->icon('heroicon-o-chat-bubble-bottom-center-text')
-                        ->hidden(fn($record) => !$record->client_id ?? !$record->client->phone || !$record->expiration_date)
-                        ->action(function($record){
+                        ->color('primary')
+                        ->hidden(function($record){
+                            $phone = false;
+                            if($record->client_id){
+                                if(!$record->client->phone){
+                                    $phone = true;
+                                }
+                            }
+                            return !$record->client_id || !$record->expiration_date || $phone;
+                        })
+                        ->url(function($record){
                             $configuration = Configuration::first();
                             $message = $configuration->domain_default_message;
                             $phone = substr($record->client->phone, 1, 2) . substr($record->client->phone, 5, 5) . substr($record->client->phone, 11);
@@ -149,16 +158,15 @@ class DomainResource extends Resource
                                 if(Str::contains($message, '{domínio}')){
                                     $message = Str::replace( '{domínio}', $record->name, $message);
                                 }
-                                dd($message);
-//                                return 'https://wa.me/55' . $phone . '/?text='. urlencode($configuration->whatsapp_message);
+                                return 'https://wa.me/55' . $phone . '/?text='. urlencode($message);
                             } else {
-//                                return 'https://wa.me/55' . $phone;
+                                return 'https://wa.me/55' . $phone;
                             }
                         })
                         ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('md')
-                        ->color('warning'),
+                        ->color('primary'),
                     Tables\Actions\Action::make('update')
                         ->label(__('Update'))
                         ->action(function($record){
@@ -176,7 +184,7 @@ class DomainResource extends Resource
                                     ->send();
                             }
                         })
-                        ->color('warning')
+                        ->color('primary')
                         ->icon('heroicon-o-arrow-path'),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\RestoreAction::make()

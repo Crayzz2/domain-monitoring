@@ -34,7 +34,6 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Domain::class, 'App\Policies\DomainPolicy');
         Gate::policy(Hosting::class, 'App\Policies\HostingPolicy');
         Gate::policy(HostingProviders::class, 'App\Policies\HostingProviderPolicy');
-        Gate::policy(Status::class, 'App\Policies\StatusPolicy');
         Gate::policy(User::class, 'App\Policies\UserPolicy');
     }
 }

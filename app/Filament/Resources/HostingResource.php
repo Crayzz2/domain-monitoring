@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\HostingResource\Pages;
 use App\Filament\Resources\HostingResource\RelationManagers;
 use App\Models\Client;
+use App\Models\Configuration;
 use App\Models\Hosting;
 use App\Models\HostingProviders;
 use Carbon\Carbon;
@@ -15,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class HostingResource extends Resource
 {
@@ -56,7 +58,7 @@ class HostingResource extends Resource
         if($expired > 0){
             return 'danger';
         } else if($toExpire > 0){
-            return 'warning';
+            return 'primary';
         } else {
             return 'success';
         }
@@ -135,8 +137,42 @@ class HostingResource extends Resource
                     ])
                     ->modalWidth('md'),
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('whatsapp')
+                        ->label(__('Message'))
+                        ->icon('heroicon-o-chat-bubble-bottom-center-text')
+                        ->hidden(function($record){
+                            $expire = false;
+                            $phone = false;
+                            if($record->expiration_date > now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d')){
+                                $expire = true;
+                            }
+                            if($record->client_id){
+                                if(!$record->client->phone){
+                                    $phone = true;
+                                }
+                            }
+                            return !$record->client_id || !$record->expiration_date || $phone || $expire;
+                        })
+                        ->url(function($record){
+                            $configuration = Configuration::first();
+                            $message = $configuration->hosting_default_message;
+                            $phone = substr($record->client->phone, 1, 2) . substr($record->client->phone, 5, 5) . substr($record->client->phone, 11);
+                            if($message){
+                                if(Str::contains($message, '{nome}')){
+                                    $message = Str::replace('{nome}', $record->client->name, $message, false);
+                                }
+                                if(Str::contains($message, '{data de expiracão}')){
+                                    $message = Str::replace('{data de expiracão}', Carbon::parse($record->expiration_date)->format('d/m/Y'), $message);
+                                }
+                                return 'https://wa.me/55' . $phone . '/?text='. urlencode($message);
+                            } else {
+                                return 'https://wa.me/55' . $phone;
+                            }
+                        })
+                        ->openUrlInNewTab(),
                     Tables\Actions\Action::make('update_year')
                         ->label(__('Update Year'))
+                        ->color('primary')
                         ->icon('heroicon-o-arrow-path')
                         ->action(function($record){
                             if($record->expiration_date){
@@ -146,6 +182,7 @@ class HostingResource extends Resource
                         }),
                     Tables\Actions\Action::make('update_personalized')
                         ->label(__('Update Personalized'))
+                        ->color('primary')
                         ->icon('heroicon-o-arrow-path')
                         ->form([
                             Forms\Components\Group::make([
@@ -176,7 +213,7 @@ class HostingResource extends Resource
                         }),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('md')
-                        ->color('warning'),
+                        ->color('primary'),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\RestoreAction::make()
                 ]),

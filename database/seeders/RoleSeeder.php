@@ -60,5 +60,22 @@ class RoleSeeder extends Seeder
                 }
             }
         }
+        foreach($this->permissions as $permission){
+            try {
+                $newRole = new Role();
+                $newRole->name = $permission;
+                $newRole->guard_name = 'web';
+                $newRole->save();
+                foreach($this->roles as $role){
+                    $permission = Permission::where('name', $permission . ' ' . $role)->pluck('id')->first();
+                    DB::table('role_has_permissions')->insert([
+                        'permission_id' => $permission,
+                        'role_id' => $newRole->id,
+                    ]);
+                }
+            } catch (\Exception $e) {
+                Log::error($e->getMessage());
+            }
+        }
     }
 }

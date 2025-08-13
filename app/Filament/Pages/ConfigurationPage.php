@@ -26,7 +26,7 @@ class ConfigurationPage extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        return auth()->user()->hasAnyRole(['Super Admin', 'Configuração']);
+        return auth()->user()->hasAnyRole(['Super Admin', 'Configuração', 'Editar']);
     }
 
 
@@ -71,8 +71,6 @@ class ConfigurationPage extends Page implements HasForms
                                 ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{nome}')),
                             Forms\Components\Actions\Action::make('Data de expiração')
                                 ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{data de expiracão}')),
-                            Forms\Components\Actions\Action::make('Hospedagem')
-                                ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{hospedagem}')),
                         ]),
                 ])->columns(2),
             ])

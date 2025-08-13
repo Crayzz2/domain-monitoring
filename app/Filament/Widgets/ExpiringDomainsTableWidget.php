@@ -11,7 +11,7 @@ class ExpiringDomainsTableWidget extends BaseWidget
 {
     public static function canView(): bool
     {
-        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle']);
+        return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle', 'Listar', 'Editar']);
     }
     protected int | string | array $columnSpan = 'full';
 
