@@ -42,9 +42,15 @@
     "Domain Status": "Status dos Domínios",
     "Hosting Status": "Status das Hospedagens",
     "Summary": "Relatório",
-    "Whatsapp Default Message": "Mensagem Padrão do Whatsapp",
     "Message": "Mensagem",
     "Hosting/Domain": "Hospedagem/Domínio",
     "User": "Usuário",
-    "Roles": "Funções"
+    "Roles": "Funções",
+    "financial_informed": "Informado ao financeiro",
+    "charge_sent": "Cobrança enviada",
+    "waiting_payment": "Aguardando Pagamento",
+    "paid": "Pago",
+    "dont_renew": "Não Renovar",
+    "Domain Default Message":  "Mensagem Padrão de Domínio",
+    "Hosting Default Message": "Mensagem Padrão de Hospedagem"
 }

@@ -84,8 +84,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
-                    ->where('expiration_date', '>', now('America/Sao_Paulo'))->get() as $domain)
+        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))->get() as $domain)
             <tr>
                 <td>{{ $domain->name }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($domain->expiration_date)->format('d/m/Y') }}</td>
@@ -104,8 +103,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
-                    ->where('expiration_date', '>', now('America/Sao_Paulo'))->get() as $hosting)
+        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))->get() as $hosting)
             <tr>
                 <td>{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($hosting->expiration_date)->format('d/m/Y') }}</td>

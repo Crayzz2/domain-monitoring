@@ -38,14 +38,20 @@ class DomainStatusTableWidget extends BaseWidget
                     ->label(__('Expiration Date'))
                     ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\SelectColumn::make('status_id')
+                Tables\Columns\SelectColumn::make('status')
                     ->label(__('Status'))
-                    ->options(Status::pluck('name', 'id'))
+                    ->options([
+                        'financial_informed' => 'Informado ao financeiro',
+                        'charge_sent' => 'Cobrança enviada',
+                        'waiting_payment' => 'Aguardando Pagamento',
+                        'paid' => 'Pago',
+                        'dont_renew' => 'Não Renovar'
+                    ])
                     ->afterStateUpdated(function($record){
-                        if(Str::contains($record->status->name, 'Pago')){
+                        if($record->status == "paid"){
                             $update = new UpdateExpiresDateController();
                             $update->update($record);
-                        } else if (Str::contains($record->status->name, 'Não Renovar')){
+                        } else if ($record->status == 'dont_renew'){
                             $record->delete();
                         }
                     })

@@ -26,6 +26,13 @@ class ExpiringHostingsTableWidget extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->label(__('Name'))
+                    ->color(
+                        fn($record)=>
+                        Hosting::where('id', $record->id)
+                            ->pluck('expiration_date')
+                            ->first() <
+                        now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null
+                    )
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))

@@ -85,6 +85,16 @@ class HostingResource extends Resource
                 Forms\Components\Select::make('hosting_providers_id')
                     ->label(__('Hosting Provider'))
                     ->options(HostingProviders::pluck('name', 'id')),
+                Forms\Components\Select::make('status')
+                    ->label(__('Status'))
+                    ->columnSpanFull()
+                    ->options([
+                        'financial_informed' => 'Informado ao financeiro',
+                        'charge_sent' => 'Cobrança enviada',
+                        'waiting_payment' => 'Aguardando Pagamento',
+                        'paid' => 'Pago',
+                        'dont_renew' => 'Não Renovar'
+                    ]),
             ]);
     }
 
@@ -112,6 +122,7 @@ class HostingResource extends Resource
                 Tables\Actions\Action::make('view_credentials')
                     ->label('')
                     ->icon('heroicon-o-eye')
+                    ->hidden(fn()=>!auth()->user()->hasAnyPermission(['Ver Credenciais']) && !auth()->user()->hasRole('Super Admin'))
                     ->form([
                         Forms\Components\TextInput::make('host_user')
                             ->label(__('Username'))

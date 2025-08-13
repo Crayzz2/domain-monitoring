@@ -16,7 +16,7 @@ class Domain extends Model
         'client_id',
         'is_third_party',
         'register_account',
-        'status_id'
+        'status'
     ];
 
     public function client()
@@ -24,8 +24,4 @@ class Domain extends Model
         return $this->belongsTo(Client::class);
     }
 
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
-    }
 }

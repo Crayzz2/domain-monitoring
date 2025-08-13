@@ -26,6 +26,13 @@ class ExpiringDomainsTableWidget extends BaseWidget
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
+                    ->color(
+                        fn($record)=>
+                        Domain::where('id', $record->id)
+                            ->pluck('expiration_date')
+                            ->first() <
+                        now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null
+                    )
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))

@@ -20,10 +20,5 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
         ]);
         Configuration::updateOrCreate(['id'=>1],[]);
-        Status::updateOrCreate(['name' => 'Informado ao financeiro'], []);
-        Status::updateOrCreate(['name' => 'Cobrança enviada'], []);
-        Status::updateOrCreate(['name' => 'Aguardando Pagamento'], []);
-        Status::updateOrCreate(['name' => 'Pago'], []);
-        Status::updateOrCreate(['name' => 'Não Renovar'], []);
     }
 }

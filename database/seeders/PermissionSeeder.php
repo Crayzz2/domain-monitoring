@@ -16,7 +16,6 @@ class PermissionSeeder extends Seeder
                 'Domínio',
                 'Hospedagem',
                 'Provedor de Hospedagem',
-                'Status',
                 'Usuário'
             ],
             'Editar' => [
@@ -24,7 +23,6 @@ class PermissionSeeder extends Seeder
                 'Domínio',
                 'Hospedagem',
                 'Provedor de Hospedagem',
-                'Status',
                 'Usuário',
                 'Configuração'
             ],
@@ -33,12 +31,12 @@ class PermissionSeeder extends Seeder
                 'Domínio',
                 'Hospedagem',
                 'Provedor de Hospedagem',
-                'Status',
                 'Usuário'
             ],
             'Ver' => [
                 'Relatório de Status',
-                'Painel de Controle'
+                'Painel de Controle',
+                'Credenciais'
             ]
         ],
     ];

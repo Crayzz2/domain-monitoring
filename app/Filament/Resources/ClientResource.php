@@ -89,20 +89,6 @@ class ClientResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\Action::make('whatsapp')
-                    ->label(__('Message'))
-                    ->icon('heroicon-o-chat-bubble-bottom-center-text')
-                    ->hidden(fn($record) => !$record->phone)
-                    ->url(function($record){
-                        $configuration = Configuration::first();
-                        $phone = substr($record->phone, 1, 2) . substr($record->phone, 5, 5) . substr($record->phone, 11);
-                        if($configuration->whatsapp_message){
-                            return 'https://wa.me/55' . $phone . '/?text='. urlencode($configuration->whatsapp_message);
-                        } else {
-                            return 'https://wa.me/55' . $phone;
-                        }
-                    })
-                ->openUrlInNewTab(),
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
             ])

@@ -18,11 +18,10 @@ class RoleSeeder extends Seeder
             'Domínio',
             'Hospedagem',
             'Provedor de Hospedagem',
-            'Status',
             'Usuário',
             'Configuração',
             'Relatório de Status',
-            'Painel de Controle'
+            'Painel de Controle',
         ]
     ];
 

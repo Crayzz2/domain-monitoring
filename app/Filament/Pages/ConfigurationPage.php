@@ -53,8 +53,28 @@ class ConfigurationPage extends Page implements HasForms
             ->schema([
                 Forms\Components\TextInput::make('notification_receive_email')
                     ->label(__('Notification Recieve Email')),
-                Forms\Components\MarkdownEditor::make('whatsapp_message')
-                    ->label(__('Whatsapp Default Message')),
+                Forms\Components\Group::make([
+                    Forms\Components\MarkdownEditor::make('domain_default_message')
+                        ->label(__('Domain Default Message'))
+                        ->hintActions([
+                            Forms\Components\Actions\Action::make('Nome')
+                                ->action(fn($set)=>$set('domain_default_message', $this->form->getState()['domain_default_message'] .= '{nome}')),
+                            Forms\Components\Actions\Action::make('Data de expiração')
+                                ->action(fn($set)=>$set('domain_default_message', $this->form->getState()['domain_default_message'] .= '{data de expiracão}')),
+                            Forms\Components\Actions\Action::make('Domínio')
+                                ->action(fn($set)=>$set('domain_default_message', $this->form->getState()['domain_default_message'] .= '{domínio}')),
+                        ]),
+                    Forms\Components\MarkdownEditor::make('hosting_default_message')
+                        ->label(__('Hosting Default Message'))
+                        ->hintActions([
+                            Forms\Components\Actions\Action::make('Nome')
+                                ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{nome}')),
+                            Forms\Components\Actions\Action::make('Data de expiração')
+                                ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{data de expiracão}')),
+                            Forms\Components\Actions\Action::make('Hospedagem')
+                                ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{hospedagem}')),
+                        ]),
+                ])->columns(2),
             ])
             ->statePath('data');
     }
@@ -73,7 +93,8 @@ class ConfigurationPage extends Page implements HasForms
         try {
             $data = $this->form->getState();
             $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : null;
-            $data['whatsapp_message'] ? $this->configuration->whatsapp_message = $data['whatsapp_message'] : null;
+            $data['domain_default_message'] ? $this->configuration->domain_default_message = $data['domain_default_message'] : null;
+            $data['hosting_default_message'] ? $this->configuration->hosting_default_message = $data['hosting_default_message'] : null;
             $this->configuration->save();
             Notification::make('success')
                 ->success()

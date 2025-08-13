@@ -20,7 +20,13 @@ class DomainStatusChart extends ChartWidget
 
     protected function getData(): array
     {
-        $status = [];
+        $status = [
+            'financial_informed' => 0,
+            'charge_sent' => 0,
+            'waiting_payment' => 0,
+            'paid' => 0,
+            'dont_renew' => 0
+        ];
         $labels = [];
         $data = [];
         $background = [
@@ -50,16 +56,13 @@ class DomainStatusChart extends ChartWidget
             "rgb(200, 200, 200)",
             "rgb(230, 230, 230)",
         ];
-        foreach(Status::all() as $status_opt) {
-            $status[$status_opt->name] = 0;
-        }
         foreach(Domain::all() as $domain){
-            if($domain->status_id){
-                $status[$domain->status->name] += 1;
+            if($domain->status){
+                $status[$domain->status] += 1;
             }
         }
         foreach($status as $status_name => $status_count){
-            $labels[] = $status_name;
+            $labels[] = __($status_name);
             $data[] = $status_count;
         }
 

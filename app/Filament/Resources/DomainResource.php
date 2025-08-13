@@ -87,6 +87,16 @@ class DomainResource extends Resource
                     ->inline(false),
                 Forms\Components\TextInput::make('register_account')
                     ->label(__('Account')),
+                Forms\Components\Select::make('status')
+                    ->label(__('Status'))
+                    ->columnSpanFull()
+                    ->options([
+                        'financial_informed' => 'Informado ao financeiro',
+                        'charge_sent' => 'Cobrança enviada',
+                        'waiting_payment' => 'Aguardando Pagamento',
+                        'paid' => 'Pago',
+                        'dont_renew' => 'Não Renovar'
+                    ]),
             ]);
     }
 
@@ -121,6 +131,31 @@ class DomainResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('whatsapp')
+                        ->label(__('Message'))
+                        ->icon('heroicon-o-chat-bubble-bottom-center-text')
+                        ->hidden(fn($record) => !$record->client_id ?? !$record->client->phone || !$record->expiration_date)
+                        ->action(function($record){
+                            $configuration = Configuration::first();
+                            $message = $configuration->domain_default_message;
+                            $phone = substr($record->client->phone, 1, 2) . substr($record->client->phone, 5, 5) . substr($record->client->phone, 11);
+                            if($message){
+                                if(Str::contains($message, '{nome}')){
+                                    $message = Str::replace('{nome}', $record->client->name, $message, false);
+                                }
+                                if(Str::contains($message, '{data de expiracão}')){
+                                    $message = Str::replace('{data de expiracão}', Carbon::parse($record->expiration_date)->format('d/m/Y'), $message);
+                                }
+                                if(Str::contains($message, '{domínio}')){
+                                    $message = Str::replace( '{domínio}', $record->name, $message);
+                                }
+                                dd($message);
+//                                return 'https://wa.me/55' . $phone . '/?text='. urlencode($configuration->whatsapp_message);
+                            } else {
+//                                return 'https://wa.me/55' . $phone;
+                            }
+                        })
+                        ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('md')
                         ->color('warning'),

@@ -16,7 +16,7 @@ class Hosting extends Model
         'hosting_providers_id',
         'host_user',
         'host_password',
-        'status_id'
+        'status'
     ];
 
     public function hosting_providers()
@@ -27,10 +27,5 @@ class Hosting extends Model
     public function client()
     {
         return $this->belongsTo(Client::class);
-    }
-
-    public function status()
-    {
-        return $this->belongsTo(Status::class);
     }
 }

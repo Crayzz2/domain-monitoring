@@ -55,6 +55,11 @@ class UserResource extends Resource
                     ->label(__('Roles'))
                     ->multiple()
                     ->relationship('roles', 'name')
+                    ->columnSpanFull(),
+                Forms\Components\Select::make('permissions')
+                    ->label(__('Permissions'))
+                    ->multiple()
+                    ->relationship('permissions', 'name')
                     ->columnSpanFull()
             ]);
     }
