@@ -124,6 +124,7 @@ class HostingResource extends Resource
                 Tables\Actions\Action::make('view_credentials')
                     ->label('')
                     ->icon('heroicon-o-eye')
+                    ->color('primary')
                     ->hidden(fn()=>!auth()->user()->hasAnyPermission(['Ver Credenciais']) && !auth()->user()->hasRole('Super Admin'))
                     ->form([
                         Forms\Components\TextInput::make('host_user')
@@ -140,6 +141,7 @@ class HostingResource extends Resource
                     Tables\Actions\Action::make('whatsapp')
                         ->label(__('Message'))
                         ->icon('heroicon-o-chat-bubble-bottom-center-text')
+                        ->color('primary')
                         ->hidden(function($record){
                             $expire = false;
                             $phone = false;
