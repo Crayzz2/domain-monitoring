@@ -9,6 +9,7 @@ use App\Filament\Widgets\ExpiringDomainsTableWidget;
 use App\Filament\Widgets\ExpiringHostingsTableWidget;
 use App\Filament\Widgets\HostingExpirationWidget;
 use App\Filament\Widgets\HostingStatusChart;
+use App\Models\Configuration;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -37,7 +38,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->colors([
-                'primary' => Color::Purple,
+                'primary' => Configuration::first()?->default_color ?? '#c084fc',
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')

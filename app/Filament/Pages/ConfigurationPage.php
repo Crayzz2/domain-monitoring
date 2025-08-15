@@ -73,6 +73,18 @@ class ConfigurationPage extends Page implements HasForms
                                 ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{data de expiracão}')),
                         ]),
                 ])->columns(2),
+                Forms\Components\ColorPicker::make('default_color')
+                    ->label(__('Default Color'))
+                    ->default(Configuration::first()?->default_color),
+                Forms\Components\TextInput::make('domain_default_filter_days')
+                    ->label(__('Domain Default Filter'))
+                    ->numeric()
+                    ->suffix('('.__('Days').')'),
+                Forms\Components\TextInput::make('hosting_default_filter_days')
+                    ->label(__('Hosting Default Filter'))
+                    ->numeric()
+                    ->suffix('('.__('Days').')'),
+
             ])
             ->statePath('data');
     }
@@ -93,6 +105,9 @@ class ConfigurationPage extends Page implements HasForms
             $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : null;
             $data['domain_default_message'] ? $this->configuration->domain_default_message = $data['domain_default_message'] : null;
             $data['hosting_default_message'] ? $this->configuration->hosting_default_message = $data['hosting_default_message'] : null;
+            $data['default_color'] ? $this->configuration->default_color = $data['default_color'] : null;
+            $data['domain_default_filter_days'] ? $this->configuration->domain_default_filter_days = $data['domain_default_filter_days'] : null;
+            $data['hosting_default_filter_days'] ? $this->configuration->hosting_default_filter_days = $data['hosting_default_filter_days'] : null;
             $this->configuration->save();
             Notification::make('success')
                 ->success()

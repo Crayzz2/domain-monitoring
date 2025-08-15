@@ -19,6 +19,13 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
         ]);
-        Configuration::updateOrCreate(['id'=>1],[]);
+        Configuration::updateOrCreate(
+            ['id'=>1],
+            [
+                'default_color' => '#c084fc',
+                'domain_default_filter_days' => 90,
+                'hosting_default_filter_days' => 90
+            ]
+        );
     }
 }

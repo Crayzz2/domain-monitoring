@@ -2,26 +2,34 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Configuration;
 use App\Models\Hosting;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Contracts\Support\Htmlable;
 
 class ExpiringHostingsTableWidget extends BaseWidget
 {
+    public $default_days;
+    public function mount(){
+        $this->default_days = Configuration::first()?->hosting_default_filter_days ?? 90;
+    }
+    public function getTableHeading(): string|Htmlable|null
+    {
+        return __('Hostings Expiring In Next') . ' ' . $this->default_days . ' ' . __('Days');
+    }
     public static function canView(): bool
     {
         return auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle', 'Listar', 'Editar']);
     }
     protected int | string | array $columnSpan = 'full';
 
-    protected static ?string $heading = 'Hospedagens Expirando nos Próximos 90 Dias';
-
     public function table(Table $table): Table
     {
         return $table
             ->query(
-                Hosting::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
+                Hosting::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addDays((integer)$this->default_days)->format('Y-m-d'))
             )
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')

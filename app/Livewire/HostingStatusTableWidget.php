@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -29,7 +30,7 @@ class HostingStatusTableWidget extends BaseWidget implements HasForms, HasAction
     {
         return $table
             ->query(
-                Hosting::where('expiration_date', '<' ,now('America/Sao_Paulo')->addMonths(2)->format('Y-m-d'))
+                Hosting::query()
             )
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
@@ -62,6 +63,40 @@ class HostingStatusTableWidget extends BaseWidget implements HasForms, HasAction
                     })
                     ->sortable()
                 ,
+            ])
+            ->filters([
+                Tables\Filters\Filter::make('expiration_date')
+                    ->form([
+                        Forms\Components\DatePicker::make('expire_from')
+                            ->label(__('Expire From'))
+                            ->default(now('America/Sao_Paulo')->format('Y-m-d')),
+                        Forms\Components\DatePicker::make('expire_until')
+                            ->label(__('Expire Until'))
+                            ->default(now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d')),
+                    ])
+                    ->indicateUsing(function (array $data): ?string {
+                        if (!$data['expire_from'] && !$data['expire_until']) {
+                            return null;
+                        } else if ($data['expire_from'] && ! $data['expire_until']) {
+                            return __('From'). ' ' . Carbon::parse($data['expire_from'])->format('d/m/Y');
+                        } else if(!$data['expire_from'] && $data['expire_until']){
+                            return __('Until') . ' ' . Carbon::parse($data['expire_until'])->format('d/m/Y');
+                        } else {
+                            return __('From'). ' ' . Carbon::parse($data['expire_from'])->format('d/m/Y') . ' - ' . __('Until') . ' ' . Carbon::parse($data['expire_until'])->format('d/m/Y');
+                        }
+
+                    })
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['expire_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('expiration_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['expire_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('expiration_date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
