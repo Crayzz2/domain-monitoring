@@ -18,11 +18,14 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::call(function(){
-    $domains = Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
+    $configuration = Configuration::first();
+    $days = $configuration->summary_default_interval_days ?? 90;
+    $domains = Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)$days))
         ->where('expiration_date', '>', now('America/Sao_Paulo'))->get();
-    $hostings = Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))
+    $hostings = Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)$days))
         ->where('expiration_date', '>', now('America/Sao_Paulo'))->get();
-    $html = '<h1>Resumo dos próximos 90 dias</h1><br>
+
+    $html = '<h1>Resumo dos próximos ' . $days . ' dias</h1><br>
                                  <h2>Domínios</h2>
                                  <table border=1>
                                  <thead>
@@ -66,8 +69,8 @@ Schedule::call(function(){
 
     Resend::emails()->send([
         'from' => env('APP_NAME').' <'.env('MAIL_FROM_ADDRESS').'>',
-        'to' => 'thiago.lacerda.fazzolo@gmail.com',
-        'subject' => 'Relatório dos próximos 90 dias',
+        'to' => $configuration?->notification_receive_email,
+        'subject' => 'Relatório dos próximos '.$days.' dias',
         'html' => Str::squish($html)
     ]);
-})->monthly();
+})->everyMinute();

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('default_color')->nullable()->after('hosting_default_message');
             $table->string('domain_default_filter_days')->nullable()->after('default_color');
             $table->string('hosting_default_filter_days')->nullable()->after('domain_default_filter_days');
+            $table->string('summary_default_interval_days')->nullable()->after('hosting_default_filter_days');
         });
     }
 
@@ -27,6 +28,7 @@ return new class extends Migration
             $table->dropColumn('default_color');
             $table->dropColumn('domain_default_filter_days');
             $table->dropColumn('hosting_default_filter_days');
+            $table->dropColumn('summary_default_interval_days');
         });
     }
 };

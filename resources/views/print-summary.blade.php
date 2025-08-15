@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Resumo 90 dias</title>
+    <title>Resumo {{\App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias</title>
     <style>
         /* CSS simples compatível com DomPDF */
         html, body {
@@ -70,7 +70,7 @@
 </head>
 <body>
 <header>
-    <h1>Resumo dos próximos 90 dias</h1>
+    <h1>Resumo dos próximos {{App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias</h1>
 </header>
 
 <div class="report">
@@ -84,7 +84,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))->get() as $domain)
+        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->get() as $domain)
             <tr>
                 <td>{{ $domain->name }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($domain->expiration_date)->format('d/m/Y') }}</td>
@@ -103,7 +103,7 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addMonths(3))->get() as $hosting)
+        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->get() as $hosting)
             <tr>
                 <td>{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($hosting->expiration_date)->format('d/m/Y') }}</td>
@@ -113,7 +113,7 @@
     </table>
 
     <div class="meta">
-        Gerado em: {{ now('America/Sao_Paulo')->format('d/m/Y H:i') }} — Relatório de vencimentos nos próximos 90 dias.
+        Gerado em: {{ now('America/Sao_Paulo')->format('d/m/Y H:i') }} — Relatório de vencimentos nos próximos {{App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias.
     </div>
 </div>
 </body>

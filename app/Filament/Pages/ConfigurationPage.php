@@ -54,6 +54,23 @@ class ConfigurationPage extends Page implements HasForms
                 Forms\Components\TextInput::make('notification_receive_email')
                     ->label(__('Notification Recieve Email')),
                 Forms\Components\Group::make([
+                    Forms\Components\ColorPicker::make('default_color')
+                        ->label(__('Default Color'))
+                        ->default(Configuration::first()?->default_color),
+                    Forms\Components\TextInput::make('domain_default_filter_days')
+                        ->label(__('Domain Default Filter'))
+                        ->numeric()
+                        ->suffix(__('Days')),
+                    Forms\Components\TextInput::make('hosting_default_filter_days')
+                        ->label(__('Hosting Default Filter'))
+                        ->numeric()
+                        ->suffix(__('Days')),
+                    Forms\Components\TextInput::make('summary_default_interval_days')
+                        ->label(__('Summary Default Interval'))
+                        ->numeric()
+                        ->suffix(__('Days')),
+                ])->columns(4)->columnSpanFull(),
+                Forms\Components\Group::make([
                     Forms\Components\MarkdownEditor::make('domain_default_message')
                         ->label(__('Domain Default Message'))
                         ->hintActions([
@@ -73,17 +90,6 @@ class ConfigurationPage extends Page implements HasForms
                                 ->action(fn($set)=>$set('hosting_default_message', $this->form->getState()['hosting_default_message'] .= '{data de expiracão}')),
                         ]),
                 ])->columns(2),
-                Forms\Components\ColorPicker::make('default_color')
-                    ->label(__('Default Color'))
-                    ->default(Configuration::first()?->default_color),
-                Forms\Components\TextInput::make('domain_default_filter_days')
-                    ->label(__('Domain Default Filter'))
-                    ->numeric()
-                    ->suffix('('.__('Days').')'),
-                Forms\Components\TextInput::make('hosting_default_filter_days')
-                    ->label(__('Hosting Default Filter'))
-                    ->numeric()
-                    ->suffix('('.__('Days').')'),
 
             ])
             ->statePath('data');
@@ -108,6 +114,7 @@ class ConfigurationPage extends Page implements HasForms
             $data['default_color'] ? $this->configuration->default_color = $data['default_color'] : null;
             $data['domain_default_filter_days'] ? $this->configuration->domain_default_filter_days = $data['domain_default_filter_days'] : null;
             $data['hosting_default_filter_days'] ? $this->configuration->hosting_default_filter_days = $data['hosting_default_filter_days'] : null;
+            $data['summary_default_interval_days'] ? $this->configuration->summary_default_interval_days = $data['summary_default_interval_days'] : null;
             $this->configuration->save();
             Notification::make('success')
                 ->success()

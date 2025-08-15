@@ -14,6 +14,7 @@ class Configuration extends Model
         'whatsapp_message',
         'default_color',
         'domain_default_filter_days',
-        'hosting_default_filter_days'
+        'hosting_default_filter_days',
+        'summary_default_interval_days'
     ];
 }
