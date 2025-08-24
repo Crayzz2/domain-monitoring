@@ -50,6 +50,7 @@ class HostingProvidersResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                    ->label(__('Name'))
                     ->searchable(),
             ])
             ->filters([

@@ -17,7 +17,7 @@ class PrintSummaryController extends Controller
             ->setPaper('a4')
             ->setOption('isHtml5ParserEnabled', true);
 
-        return $pdf->stream('invoice.pdf'); // To view in browser
-//        return $pdf->download('relatório.pdf'); // To force download
+//        return $pdf->stream('invoice.pdf'); // To view in browser
+        return $pdf->download('relatório.pdf'); // To force download
     }
 }
