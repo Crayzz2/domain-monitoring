@@ -27,7 +27,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class RoleResource extends Resource
 {
-
+    public static function canCreate(): bool
+    {
+        return false;
+    }
     public static function canAccess(): bool
     {
         return auth()->user()->hasRole('Super Admin');
@@ -156,25 +159,25 @@ class RoleResource extends Resource
                     })
                     ->wrap()
                     ->searchable(),
-                TextColumn::make('permissions_count')
-                    ->counts('permissions')
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.permissions_count'))
-                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true)),
-                TextColumn::make('guard_name')
-                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
-                    ->searchable(),
+//                TextColumn::make('permissions_count')
+//                    ->counts('permissions')
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.permissions_count'))
+//                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true)),
+//                TextColumn::make('guard_name')
+//                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.roles.isToggledHiddenByDefault', true))
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
+//                    ->searchable(),
             ])
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ])
+//            ->bulkActions([
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
+//            ])
             ->emptyStateActions(
                 config('filament-spatie-roles-permissions.should_remove_empty_state_actions.roles') ? [] :
                     [

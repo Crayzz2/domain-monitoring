@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources;
 
-use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource\Pages\CreatePermission;
-use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource\Pages\EditPermission;
-use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource\Pages\ListPermissions;
-use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource\Pages\ViewPermission;
+use App\Filament\Resources\PermissionResource\Pages\CreatePermission;
+use App\Filament\Resources\PermissionResource\Pages\EditPermission;
+use App\Filament\Resources\PermissionResource\Pages\ListPermissions;
+use App\Filament\Resources\PermissionResource\Pages\ViewPermission;
 use Althinect\FilamentSpatieRolesPermissions\Resources\PermissionResource\RelationManager\RoleRelationManager;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
@@ -25,9 +25,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-
 class PermissionResource extends Resource
 {
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function canAccess(): bool
     {
         return auth()->user()->hasRole('Super Admin');
@@ -127,70 +131,71 @@ class PermissionResource extends Resource
                 TextColumn::make('name')
                     ->label(__('filament-spatie-roles-permissions::filament-spatie.field.name'))
                     ->searchable(),
-                TextColumn::make('guard_name')
-                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.permissions.isToggledHiddenByDefault', true))
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
-                    ->searchable()
-                    ->visible(fn() => config('filament-spatie-roles-permissions.should_show_guard', true)),
+//                TextColumn::make('guard_name')
+//                    ->toggleable(isToggledHiddenByDefault: config('filament-spatie-roles-permissions.toggleable_guard_names.permissions.isToggledHiddenByDefault', true))
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
+//                    ->searchable()
+//                    ->visible(fn() => config('filament-spatie-roles-permissions.should_show_guard', true)),
             ])
-            ->filters([
-                SelectFilter::make('models')
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.models'))
-                    ->multiple()
-                    ->options(function () {
-                        $commands = new \Althinect\FilamentSpatieRolesPermissions\Commands\Permission();
-
-                        /** @var \ReflectionClass[] */
-                        $models = $commands->getAllModels();
-
-                        $options = [];
-
-                        foreach ($models as $model) {
-                            $options[$model->getShortName()] = $model->getShortName();
-                        }
-
-                        return $options;
-                    })
-                    ->query(function (Builder $query, array $data) {
-                        if (isset($data['values'])) {
-                            $query->where(function (Builder $query) use ($data) {
-                                foreach ($data['values'] as $key => $value) {
-                                    if ($value) {
-                                        $query->orWhere('name', 'like', eval(config('filament-spatie-roles-permissions.model_filter_key')));
-                                    }
-                                }
-                            });
-                        }
-
-                        return $query;
-                    }),
-                SelectFilter::make('guard_name')
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
-                    ->multiple()
-                    ->options(config('filament-spatie-roles-permissions.guard_names')),
-            ])->actions([
+//            ->filters([
+//                SelectFilter::make('models')
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.models'))
+//                    ->multiple()
+//                    ->options(function () {
+//                        $commands = new \Althinect\FilamentSpatieRolesPermissions\Commands\Permission();
+//
+//                        /** @var \ReflectionClass[] */
+//                        $models = $commands->getAllModels();
+//
+//                        $options = [];
+//
+//                        foreach ($models as $model) {
+//                            $options[$model->getShortName()] = $model->getShortName();
+//                        }
+//
+//                        return $options;
+//                    })
+//                    ->query(function (Builder $query, array $data) {
+//                        if (isset($data['values'])) {
+//                            $query->where(function (Builder $query) use ($data) {
+//                                foreach ($data['values'] as $key => $value) {
+//                                    if ($value) {
+//                                        $query->orWhere('name', 'like', eval(config('filament-spatie-roles-permissions.model_filter_key')));
+//                                    }
+//                                }
+//                            });
+//                        }
+//
+//                        return $query;
+//                    }),
+//                SelectFilter::make('guard_name')
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.field.guard_name'))
+//                    ->multiple()
+//                    ->options(config('filament-spatie-roles-permissions.guard_names')),
+//            ])
+            ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-                BulkAction::make('Attach to roles')
-                    ->label(__('filament-spatie-roles-permissions::filament-spatie.action.attach_to_roles'))
-                    ->action(function (Collection $records, array $data): void {
-                        Role::whereIn('id', $data['roles'])->each(function (Role $role) use ($records): void {
-                            $records->each(fn(Permission $permission) => $role->givePermissionTo($permission));
-                        });
-                    })
-                    ->form([
-                        Select::make('roles')
-                            ->multiple()
-                            ->label(__('filament-spatie-roles-permissions::filament-spatie.field.role'))
-                            ->options(Role::query()->pluck('name', 'id'))
-                            ->required(),
-                    ])->deselectRecordsAfterCompletion(),
-            ])
+//            ->bulkActions([
+//                Tables\Actions\BulkActionGroup::make([
+//                    Tables\Actions\DeleteBulkAction::make(),
+//                ]),
+//                BulkAction::make('Attach to roles')
+//                    ->label(__('filament-spatie-roles-permissions::filament-spatie.action.attach_to_roles'))
+//                    ->action(function (Collection $records, array $data): void {
+//                        Role::whereIn('id', $data['roles'])->each(function (Role $role) use ($records): void {
+//                            $records->each(fn(Permission $permission) => $role->givePermissionTo($permission));
+//                        });
+//                    })
+//                    ->form([
+//                        Select::make('roles')
+//                            ->multiple()
+//                            ->label(__('filament-spatie-roles-permissions::filament-spatie.field.role'))
+//                            ->options(Role::query()->pluck('name', 'id'))
+//                            ->required(),
+//                    ])->deselectRecordsAfterCompletion(),
+//            ])
             ->emptyStateActions(
                 config('filament-spatie-roles-permissions.should_remove_empty_state_actions.permissions') ? [] :
                     [
