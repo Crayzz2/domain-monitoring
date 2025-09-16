@@ -40,6 +40,18 @@ class AdminPanelProvider extends PanelProvider
             ->colors([
                 'primary' => Configuration::first()?->default_color ?? '#c084fc',
             ])
+            ->brandLogo(function(){
+                $configuration = Configuration::first()?->company_logo;
+                if($configuration){
+                    return asset('storage/'. $configuration);
+                }
+            })
+            ->brandName(function(){
+                $configuration = Configuration::first()?->company_name;
+                if($configuration){
+                    return $configuration;
+                }
+            })
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([])

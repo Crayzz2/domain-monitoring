@@ -15,13 +15,19 @@ class Domain extends Model
         'last_updated',
         'client_id',
         'is_third_party',
+        'hosting_provider_id',
         'register_account',
-        'status'
+        'status',
     ];
 
     public function client()
     {
         return $this->belongsTo(Client::class);
+    }
+
+    public function hostingProvider()
+    {
+        return $this->belongsTo(HostingProviders::class);
     }
 
 }

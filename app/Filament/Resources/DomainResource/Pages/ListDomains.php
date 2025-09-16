@@ -30,7 +30,7 @@ class ListDomains extends ListRecords
                 }),
             Actions\CreateAction::make()
                 ->label(__('Add Domain'))
-                ->modalWidth('md')
+                ->modalWidth('lg')
                 ->modalSubmitActionLabel(__('Add'))
                 ->after(function($record) {
                     $update = new UpdateExpiresDateController();

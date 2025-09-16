@@ -70,6 +70,9 @@
 </head>
 <body>
 <header>
+    @if(\App\Models\Configuration::first()?->company_logo)
+        <img src="{{asset('storage/'.\App\Models\Configuration::first()?->company_logo)}}">
+    @endif
     <h1>Resumo dos próximos {{App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias</h1>
 </header>
 

@@ -15,6 +15,8 @@ class Configuration extends Model
         'default_color',
         'domain_default_filter_days',
         'hosting_default_filter_days',
-        'summary_default_interval_days'
+        'summary_default_interval_days',
+        'company_name',
+        'company_logo',
     ];
 }

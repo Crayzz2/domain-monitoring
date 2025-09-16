@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
 
 class HostingResource extends Resource
@@ -79,7 +80,8 @@ class HostingResource extends Resource
                 Forms\Components\TextInput::make('host_password')
                     ->label(__('Password'))
                     ->password()
-                    ->revealable(),
+                    ->revealable()
+                    ->formatStateUsing(fn($state)=>$state ? Crypt::decrypt($state) : ''),
                 Forms\Components\Toggle::make('is_third_party')
                     ->label(__('Third Party Hosting'))
                     ->inline(false)
@@ -133,7 +135,7 @@ class HostingResource extends Resource
                             ->readOnly(),
                         Forms\Components\TextInput::make('host_password')
                             ->label(__('Password'))
-                            ->default(fn($record)=>$record->host_password)
+                            ->default(fn($record)=>$record->host_password ? Crypt::decrypt($record->host_password) : '')
                             ->readOnly(),
                     ])
                     ->modalWidth('md'),
@@ -215,7 +217,14 @@ class HostingResource extends Resource
                         }),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('md')
-                        ->color('primary'),
+                        ->color('primary')
+                        ->mutateFormDataUsing(function($data){
+                            if($data['host_password']){
+                                $password = Crypt::encrypt($data['host_password']);
+                                $data['host_password'] = $password;
+                            }
+                            return $data;
+                        }),
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\RestoreAction::make()
                 ]),

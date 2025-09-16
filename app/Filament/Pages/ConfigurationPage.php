@@ -51,6 +51,12 @@ class ConfigurationPage extends Page implements HasForms
     {
         return $form
             ->schema([
+                Forms\Components\Group::make([
+                    Forms\Components\FileUpload::make('company_logo')
+                        ->label(__('Company Logo')),
+                    Forms\Components\TextInput::make('company_name')
+                        ->label(__('Company Name')),
+                ])->columnSpanFull()->columns(2),
                 Forms\Components\TextInput::make('notification_receive_email')
                     ->label(__('Notification Recieve Email')),
                 Forms\Components\Group::make([
@@ -108,18 +114,21 @@ class ConfigurationPage extends Page implements HasForms
     {
         try {
             $data = $this->form->getState();
-            $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : null;
-            $data['domain_default_message'] ? $this->configuration->domain_default_message = $data['domain_default_message'] : null;
-            $data['hosting_default_message'] ? $this->configuration->hosting_default_message = $data['hosting_default_message'] : null;
-            $data['default_color'] ? $this->configuration->default_color = $data['default_color'] : null;
-            $data['domain_default_filter_days'] ? $this->configuration->domain_default_filter_days = $data['domain_default_filter_days'] : null;
-            $data['hosting_default_filter_days'] ? $this->configuration->hosting_default_filter_days = $data['hosting_default_filter_days'] : null;
-            $data['summary_default_interval_days'] ? $this->configuration->summary_default_interval_days = $data['summary_default_interval_days'] : null;
+            $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : $this->configuration->notification_receive_email = null;
+            $data['domain_default_message'] ? $this->configuration->domain_default_message = $data['domain_default_message'] : $this->configuration->domain_default_message = null;
+            $data['hosting_default_message'] ? $this->configuration->hosting_default_message = $data['hosting_default_message']: $this->configuration->hosting_default_message = null;
+            $data['default_color'] ? $this->configuration->default_color = $data['default_color'] : $this->configuration->default_color = null;
+            $data['domain_default_filter_days'] ? $this->configuration->domain_default_filter_days = $data['domain_default_filter_days'] : $this->configuration->domain_default_filter_days = 90;
+            $data['hosting_default_filter_days'] ? $this->configuration->hosting_default_filter_days = $data['hosting_default_filter_days'] : $this->configuration->hosting_default_filter_days = 90;
+            $data['summary_default_interval_days'] ? $this->configuration->summary_default_interval_days = $data['summary_default_interval_days'] : $this->configuration->summary_default_interval_days = 90;
+            $data['company_name'] ? $this->configuration->company_name = $data['company_name'] : $this->configuration->company_name = null;
+            $data['company_logo'] ? $this->configuration->company_logo = $data['company_logo'] : $this->configuration->company_logo = null;
             $this->configuration->save();
             Notification::make('success')
                 ->success()
                 ->title('Configurações salvas com sucesso!')
                 ->send();
+            redirect(route(ConfigurationPage::getRouteName()));
         } catch (Halt $exception) {
             return;
         }

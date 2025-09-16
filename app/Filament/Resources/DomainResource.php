@@ -8,6 +8,7 @@ use App\Http\Controllers\UpdateExpiresDateController;
 use App\Models\Client;
 use App\Models\Configuration;
 use App\Models\Domain;
+use App\Models\HostingProviders;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms;
@@ -82,14 +83,10 @@ class DomainResource extends Resource
                     ->label(__('Enterprise'))
                     ->options(Client::pluck('name', 'id'))
                     ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_third_party')
-                    ->label(__('Third Party Hosting'))
-                    ->inline(false),
                 Forms\Components\TextInput::make('register_account')
                     ->label(__('Account')),
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
-                    ->columnSpanFull()
                     ->options([
                         'financial_informed' => 'Informado ao financeiro',
                         'charge_sent' => 'Cobrança enviada',
@@ -97,6 +94,15 @@ class DomainResource extends Resource
                         'paid' => 'Pago',
                         'dont_renew' => 'Não Renovar'
                     ]),
+                Forms\Components\Toggle::make('is_third_party')
+                    ->label(__('Third Party Hosting'))
+                    ->inline(false)
+                    ->afterStateUpdated(fn($set)=>$set('hosting_provider_id', ''))
+                    ->live(),
+                Forms\Components\Select::make('hosting_provider_id')
+                    ->label(__('Hosting Provider'))
+                    ->hidden(fn($get)=>!$get('is_third_party'))
+                    ->options(HostingProviders::pluck('name', 'id')),
             ]);
     }
 
@@ -120,11 +126,14 @@ class DomainResource extends Resource
                     ->label(__('Last Updated'))
                     ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('is_third_party')
-                    ->label(__('Third Party Domain'))
-                    ->alignCenter(),
                 Tables\Columns\TextColumn::make('register_account')
                     ->label(__('Account')),
+                Tables\Columns\IconColumn::make('is_third_party')
+                    ->label(__('Third Party Domain'))
+                    ->boolean()
+                    ->alignCenter(),
+                Tables\Columns\TextColumn::make('hostingProvider.name')
+                    ->label(__('Hosting Provider')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -165,8 +174,14 @@ class DomainResource extends Resource
                         })
                         ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make()
-                        ->modalWidth('md')
-                        ->color('primary'),
+                        ->modalWidth('lg')
+                        ->color('primary')
+                        ->mutateFormDataUsing(function($data){
+                            if(!isset($data['hosting_provider_id'])){
+                                $data['hosting_provider_id'] = null;
+                            }
+                            return $data;
+                        }),
                     Tables\Actions\Action::make('update')
                         ->label(__('Update'))
                         ->action(function($record){
