@@ -66,13 +66,61 @@
             color: #6b7280;
             margin-top: 8px;
         }
+
+        /*.logo-container{*/
+        /*    width: 100%;*/
+        /*    text-align: left;*/
+        /*    background-color: #0b63b8;*/
+        /*}*/
+
+        /*.logo{*/
+        /*    max-height: 80px;*/
+        /*    background-color: #0f172a;*/
+        /*}*/
+
+        /*.company-name{*/
+        /*    background-color: #0f172a;*/
+        /*}*/
+        .logo-container {
+             width: 100%;
+             display: table;
+         }
+
+        .logo-cell {
+            display: table-cell;
+            text-align: right;
+            vertical-align: middle;
+            width: 50%;
+        }
+
+        .logo {
+            max-height: 70px;
+        }
+
+        .company-name {
+            display: table-cell;
+            vertical-align: middle;
+            text-align: left;
+            width: 50%;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            padding-right: 10px;
+        }
     </style>
 </head>
 <body>
 <header>
-    @if(\App\Models\Configuration::first()?->company_logo)
-        <img src="{{asset('storage/'.\App\Models\Configuration::first()?->company_logo)}}">
-    @endif
+    <div class="logo-container">
+        <div class="company-name">
+            {{ \App\Models\Configuration::first()?->company_name }}
+        </div>
+        @if($logo)
+            <div class="logo-cell">
+                <img class="logo" src="{{$logo}}">
+            </div>
+       @endif
+    </div>
     <h1>Resumo dos próximos {{App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias</h1>
 </header>
 
