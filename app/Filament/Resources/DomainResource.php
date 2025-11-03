@@ -14,6 +14,8 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Resource;
 use Filament\Support\View\Components\Modal;
 use Filament\Tables;
@@ -82,9 +84,45 @@ class DomainResource extends Resource
                 Forms\Components\Select::make('client_id')
                     ->label(__('Enterprise'))
                     ->options(Client::pluck('name', 'id'))
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->live()
+                    ->searchable()
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('create')
+                            ->icon('heroicon-o-plus')
+                            ->form([
+                                Forms\Components\TextInput::make('name')
+                                    ->label(__('Enterprise'))
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('responsible_name')
+                                    ->label(__('Responsible Name'))
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('phone')
+                                    ->label(__('Phone'))
+                                    ->mask('(99) 99999-9999')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('email')
+                                    ->label(__('Email'))
+                                    ->email()
+                                    ->columnSpanFull(),
+                            ])
+                            ->modalWidth('md')
+                            ->action(function ($data, $set){
+                                $client = Client::create([
+                                    "name" => $data['name'],
+                                    "responsible_name" => $data['responsible_name'],
+                                    "email" => $data['email'],
+                                    "phone" => $data['phone'],
+                                ]);
+                                $set('client_id', $client->id);
+                            })
+                    ),
                 Forms\Components\TextInput::make('register_account')
-                    ->label(__('Account')),
+                    ->label(__('Account'))
+                    ->hidden(fn($livewire) => !empty($livewire->mountedActions)),
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
                     ->options([
@@ -94,15 +132,6 @@ class DomainResource extends Resource
                         'paid' => 'Pago',
                         'dont_renew' => 'Não Renovar'
                     ]),
-                Forms\Components\Toggle::make('is_third_party')
-                    ->label(__('Third Party Hosting'))
-                    ->inline(false)
-                    ->afterStateUpdated(fn($set)=>$set('hosting_provider_id', ''))
-                    ->live(),
-                Forms\Components\Select::make('hosting_provider_id')
-                    ->label(__('Hosting Provider'))
-                    ->hidden(fn($get)=>!$get('is_third_party'))
-                    ->options(HostingProviders::pluck('name', 'id')),
             ]);
     }
 
@@ -128,12 +157,6 @@ class DomainResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('register_account')
                     ->label(__('Account')),
-                Tables\Columns\IconColumn::make('is_third_party')
-                    ->label(__('Third Party Domain'))
-                    ->boolean()
-                    ->alignCenter(),
-                Tables\Columns\TextColumn::make('hostingProvider.name')
-                    ->label(__('Hosting Provider')),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -175,13 +198,7 @@ class DomainResource extends Resource
                         ->openUrlInNewTab(),
                     Tables\Actions\EditAction::make()
                         ->modalWidth('lg')
-                        ->color('primary')
-                        ->mutateFormDataUsing(function($data){
-                            if(!isset($data['hosting_provider_id'])){
-                                $data['hosting_provider_id'] = null;
-                            }
-                            return $data;
-                        }),
+                        ->color('primary'),
                     Tables\Actions\Action::make('update')
                         ->label(__('Update'))
                         ->action(function($record){

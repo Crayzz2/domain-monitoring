@@ -15,10 +15,22 @@ class UpdateExpiresDateController extends Controller
             return 'Missing Record';
         }
         $response = Http::get('https://rdap.org/domain/'.$record->name);
+
         $expiresDate = null;
         if(!$response->json()){
+
             return ['type' => 'error','msg' => 'Verifique se o domínio é existente!'];
         }
+
+        if(!$record->register_account){
+            try{
+                $record->register_account = $response->json()['entities'][1]['handle'];
+            } catch (\Exception $e){
+                $record->register_account = "-";
+            }
+            $record->save();
+        }
+
 
         foreach($response->json()['events'] as $event){
             if($event['eventAction'] == 'expiration'){

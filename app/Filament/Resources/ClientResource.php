@@ -36,12 +36,12 @@ class ClientResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('Clients');
+        return __('Enterprises');
     }
 
     public static function getModelLabel(): string
     {
-        return __('Client');
+        return __('Enterprise');
     }
 
     public static function form(Form $form): Form
@@ -56,14 +56,14 @@ class ClientResource extends Resource
                     ->label(__('Responsible Name'))
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('email')
-                    ->label(__('Email'))
-                    ->email()
-                    ->required()
-                    ->columnSpanFull(),
                 Forms\Components\TextInput::make('phone')
                     ->label(__('Phone'))
                     ->mask('(99) 99999-9999')
+                    ->required()
+                    ->columnSpanFull(),
+                Forms\Components\TextInput::make('email')
+                    ->label(__('Email'))
+                    ->email()
                     ->columnSpanFull(),
             ]);
     }
@@ -91,6 +91,7 @@ class ClientResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()
                     ->modalWidth('md'),
+                Tables\Actions\DeleteAction::make()
             ])
             ->bulkActions([]);
     }
