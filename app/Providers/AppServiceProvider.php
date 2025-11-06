@@ -8,6 +8,8 @@ use App\Models\Hosting;
 use App\Models\HostingProviders;
 use App\Models\Status;
 use App\Models\User;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +28,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        FilamentColor::register(function(){
+            $user = auth()->user();
+            $default = ['primary' => Color::Amber];
+            if(!$user || !$user->default_color){
+                return $default;
+            }
+            return [
+                'primary' => $user->default_color
+            ];
+        });
+
         Gate::before(function ($user, string $ability) {
             return $user->isSuperAdmin() ? true : null;
         });
