@@ -44,6 +44,7 @@ class ConfigurationPage extends Page implements HasForms
     public function mount(): void
     {
         $this->configuration = Configuration::first();
+        $this->configuration->default_color = auth()->user()->default_color;
         $this->form->fill($this->configuration->toArray());
     }
 
@@ -114,15 +115,13 @@ class ConfigurationPage extends Page implements HasForms
     {
         try {
             $data = $this->form->getState();
-            $data['notification_receive_email'] ? $this->configuration->notification_receive_email = $data['notification_receive_email'] : $this->configuration->notification_receive_email = null;
-            $data['domain_default_message'] ? $this->configuration->domain_default_message = $data['domain_default_message'] : $this->configuration->domain_default_message = null;
-            $data['hosting_default_message'] ? $this->configuration->hosting_default_message = $data['hosting_default_message']: $this->configuration->hosting_default_message = null;
-            $data['default_color'] ? $this->configuration->default_color = $data['default_color'] : $this->configuration->default_color = null;
-            $data['domain_default_filter_days'] ? $this->configuration->domain_default_filter_days = $data['domain_default_filter_days'] : $this->configuration->domain_default_filter_days = 90;
-            $data['hosting_default_filter_days'] ? $this->configuration->hosting_default_filter_days = $data['hosting_default_filter_days'] : $this->configuration->hosting_default_filter_days = 90;
-            $data['summary_default_interval_days'] ? $this->configuration->summary_default_interval_days = $data['summary_default_interval_days'] : $this->configuration->summary_default_interval_days = 90;
-            $data['company_name'] ? $this->configuration->company_name = $data['company_name'] : $this->configuration->company_name = null;
-            $data['company_logo'] ? $this->configuration->company_logo = $data['company_logo'] : $this->configuration->company_logo = null;
+            $data['domain_default_filter_days'] ?? $data['domain_default_filter_days'] = 90;
+            $data['hosting_default_filter_days'] ?? $data['hosting_default_filter_days'] = 90;
+            $data['summary_default_interval_days'] ?? $data['summary_default_interval_days'] = 90;
+            auth()->user()->default_color = $data['default_color'];
+            unset($data['default_color']);
+            $this->configuration->fill($data);
+            auth()->user()->save();
             $this->configuration->save();
             Notification::make('success')
                 ->success()

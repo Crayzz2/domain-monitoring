@@ -18,5 +18,7 @@ class Configuration extends Model
         'summary_default_interval_days',
         'company_name',
         'company_logo',
+        'domain_default_message',
+        'hosting_default_message'
     ];
 }
