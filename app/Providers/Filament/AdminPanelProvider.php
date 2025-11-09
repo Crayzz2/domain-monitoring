@@ -37,25 +37,11 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->colors([
-                'primary' => Configuration::first()?->default_color ?? '#c084fc',
-            ])
-            ->brandLogo(function(){
-                $configuration = Configuration::first()?->company_logo;
-                if($configuration){
-                    return asset('storage/'. $configuration);
-                }
-            })
-            ->brandName(function(){
-		$configuration = Configuration::first()?->company_name;
-                if($configuration){
-                    return $configuration;
-                }
-            })
+            ->brandLogo(fn() => view('filament.panel.brandLogo'))
+            ->brandName(fn() => view('filament.panel.brandName'))
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([])
-//            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 DomainExpirationWidget::class,
                 HostingExpirationWidget::class,
@@ -63,8 +49,6 @@ class AdminPanelProvider extends PanelProvider
                 ExpiringHostingsTableWidget::class,
                 DomainStatusChart::class,
                 HostingStatusChart::class,
-//                Widgets\AccountWidget::class,
-//                Widgets\FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -80,14 +64,13 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-//            ->topNavigation(true)
-//            ->maxContentWidth(MaxWidth::Full)
             ->navigationGroups([
                 NavigationGroup::make()
                     ->label('General'),
                 NavigationGroup::make()
                     ->label(fn (): string => __('Settings')),
             ])
-            ->plugin(FilamentSpatieRolesPermissionsPlugin::make());
+            ->plugin(FilamentSpatieRolesPermissionsPlugin::make())
+            ->databaseNotifications();
     }
 }

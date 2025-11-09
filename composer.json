@@ -12,6 +12,7 @@
         "filament/filament": "^3.3",
         "filament/notifications": "^3.3",
         "filament/widgets": "^3.3",
+        "io-developer/php-whois": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
         "mailjet/mailjet-apiv3-php": "^1.6",
