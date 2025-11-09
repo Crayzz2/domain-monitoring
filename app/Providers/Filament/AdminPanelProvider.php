@@ -47,7 +47,7 @@ class AdminPanelProvider extends PanelProvider
                 }
             })
             ->brandName(function(){
-                $configuration = Configuration::first()?->company_name;
+		$configuration = Configuration::first()?->company_name;
                 if($configuration){
                     return $configuration;
                 }
