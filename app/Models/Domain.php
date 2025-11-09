@@ -18,6 +18,7 @@ class Domain extends Model
         'hosting_provider_id',
         'register_account',
         'status',
+        'activity_status',
     ];
 
     public function client()

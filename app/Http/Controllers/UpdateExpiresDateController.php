@@ -12,8 +12,9 @@ class UpdateExpiresDateController extends Controller
     public function update($record)
     {
         if(!$record){
-            return 'Missing Record';
+            return ['type' => 'error','msg' => 'Não foi encontrado nenhum registro'];
         }
+
         $response = Http::get('https://rdap.org/domain/'.$record->name);
 
         $expiresDate = null;
@@ -31,6 +32,9 @@ class UpdateExpiresDateController extends Controller
             $record->save();
         }
 
+        if(!isset($response->json()['events'])){
+            return ['type' => 'error','msg' => 'Este domínio não possui data de expiração!'];
+        }
 
         foreach($response->json()['events'] as $event){
             if($event['eventAction'] == 'expiration'){

@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\DomainResource\Pages;
 use App\Filament\Resources\DomainResource\RelationManagers;
+use App\Http\Controllers\ActivityStatusController;
 use App\Http\Controllers\UpdateExpiresDateController;
 use App\Models\Client;
 use App\Models\Configuration;
@@ -80,7 +81,12 @@ class DomainResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label(__('Domain'))
                     ->required()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->dehydrateStateUsing(function (string $state): string {
+                        $normalized = normalizer_normalize($state, \Normalizer::NFD);
+                        $cleaned = preg_replace('/[\p{M}]/u', '', $normalized);
+                        return $cleaned;
+                    }),
                 Forms\Components\Select::make('client_id')
                     ->label(__('Enterprise'))
                     ->options(Client::pluck('name', 'id'))
@@ -142,7 +148,8 @@ class DomainResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Domain'))
                     ->searchable()
-                    ->sortable(),
+                    ->sortable()
+                    ->url(fn($state)=>"https://" . $state, true),
                 Tables\Columns\TextColumn::make('client.name')
                     ->label(__('Enterprise'))
                     ->sortable()
@@ -156,7 +163,14 @@ class DomainResource extends Resource
                     ->date('d/m/Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('register_account')
-                    ->label(__('Account')),
+                    ->label(__('Account'))
+                    ->sortable()
+                    ->searchable(),
+                Tables\Columns\IconColumn::make('activity_status')
+                    ->label(__('Activity'))
+                    ->alignCenter()
+                    ->boolean()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
@@ -203,6 +217,25 @@ class DomainResource extends Resource
                         ->label(__('Update'))
                         ->action(function($record){
                             $update = new UpdateExpiresDateController();
+                            $response = $update->update($record);
+                            if($response['type']=='error'){
+                                Notification::make('error')
+                                    ->danger()
+                                    ->title($response['msg'])
+                                    ->send();
+                            } else if($response['type']=='success'){
+                                Notification::make('success')
+                                    ->success()
+                                    ->title($response['msg'])
+                                    ->send();
+                            }
+                        })
+                        ->color('primary')
+                        ->icon('heroicon-o-arrow-path'),
+                    Tables\Actions\Action::make('update_activity')
+                        ->label(__('Update Activity'))
+                        ->action(function($record){
+                            $update = new ActivityStatusController();
                             $response = $update->update($record);
                             if($response['type']=='error'){
                                 Notification::make('error')

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\DomainResource\Pages;
 
 use App\Filament\Resources\DomainResource;
+use App\Http\Controllers\ActivityStatusController;
 use App\Http\Controllers\UpdateExpiresDateController;
 use App\Models\Configuration;
 use App\Models\Domain;
@@ -25,7 +26,9 @@ class ListDomains extends ListRecords
                 ->action(function(){
                     foreach(Domain::all() as $domain){
                         $update = new UpdateExpiresDateController();
+                        $update_activity = new ActivityStatusController();
                         $update->update($domain);
+                        $update_activity->update($domain);
                     }
                 }),
             Actions\CreateAction::make()
@@ -34,7 +37,9 @@ class ListDomains extends ListRecords
                 ->modalSubmitActionLabel(__('Add'))
                 ->after(function($record) {
                     $update = new UpdateExpiresDateController();
+                    $update_activity = new ActivityStatusController();
                     $response = $update->update($record);
+                    $update_activity->update($record);
                     if($response['type']=='error'){
                         Notification::make('error')
                             ->danger()
