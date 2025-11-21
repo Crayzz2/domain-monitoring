@@ -110,43 +110,55 @@
 </header>
 
 <div class="report">
+    @php
+        $domains = \App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get();
+        $hostings = \App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get();
+    @endphp
     <h2>Domínios</h2>
-    <table role="table" aria-label="Domínios">
-        <thead>
-        <tr>
-            <th>Domínio</th>
-            <th class="nowrap">Data de Expiração</th>
-            <th>Cliente</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get() as $domain)
+    @if($domains->count()>0)
+        <table role="table" aria-label="Domínios">
+            <thead>
             <tr>
-                <td style="{{$domain->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $domain->name }}</td>
-                <td class="nowrap">{{ \Carbon\Carbon::parse($domain->expiration_date)->format('d/m/Y') }}</td>
-                <td>{{ $domain->client_id ? $domain->client->name : '' }}</td>
+                <th>Domínio</th>
+                <th class="nowrap">Data de Expiração</th>
+                <th>Cliente</th>
             </tr>
-        @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach($domains as $domain)
+                <tr>
+                    <td style="{{$domain->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $domain->name }}</td>
+                    <td class="nowrap">{{ \Carbon\Carbon::parse($domain->expiration_date)->format('d/m/Y') }}</td>
+                    <td>{{ $domain->client_id ? $domain->client->name : '' }}</td>
+                </tr>
+            @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Nenhum domínio a vencer nesse período</p>
+    @endif
 
     <h2>Hospedagens</h2>
-    <table role="table" aria-label="Hospedagens">
-        <thead>
-        <tr>
-            <th>Cliente</th>
-            <th class="nowrap">Data de Expiração</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get() as $hosting)
-            <tr>
-                <td style="{{$hosting->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
-                <td class="nowrap">{{ \Carbon\Carbon::parse($hosting->expiration_date)->format('d/m/Y') }}</td>
-            </tr>
-        @endforeach
-        </tbody>
-    </table>
+    @if($hostings->count()>0)
+        <table role="table" aria-label="Hospedagens">
+            <thead>
+                <tr>
+                    <th>Cliente</th>
+                    <th class="nowrap">Data de Expiração</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($hostings as $hosting)
+                    <tr>
+                        <td style="{{$hosting->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
+                        <td class="nowrap">{{ \Carbon\Carbon::parse($hosting->expiration_date)->format('d/m/Y') }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p>Nenhuma hospedagem a vencer nesse período</p>
+    @endif
 
     <div class="meta">
         Gerado em: {{ now('America/Sao_Paulo')->format('d/m/Y H:i') }} — Relatório de vencimentos nos próximos {{App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias.
