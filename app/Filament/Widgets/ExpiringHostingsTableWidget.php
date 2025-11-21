@@ -29,18 +29,12 @@ class ExpiringHostingsTableWidget extends BaseWidget
     {
         return $table
             ->query(
-                Hosting::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addDays((integer)$this->default_days)->format('Y-m-d'))
+                Hosting::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addDays((integer)$this->default_days)->format('Y-m-d'))->orderBy('expiration_date')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->label(__('Name'))
-                    ->color(
-                        fn($record)=>
-                        Hosting::where('id', $record->id)
-                            ->pluck('expiration_date')
-                            ->first() <
-                        now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null
-                    )
+                    ->color(fn($record)=> $record->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null)
                     ->alignCenter(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))

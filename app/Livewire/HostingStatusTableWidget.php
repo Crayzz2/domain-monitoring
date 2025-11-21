@@ -35,13 +35,7 @@ class HostingStatusTableWidget extends BaseWidget implements HasForms, HasAction
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->label(__('Client'))
-                    ->color(
-                        fn($record)=>
-                            Hosting::where('id', $record->id)
-                                ->pluck('expiration_date')
-                                ->first() <
-                            now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null
-                    )
+                    ->color(fn($record)=> $record->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))

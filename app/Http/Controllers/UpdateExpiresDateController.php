@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Filament\Notifications\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class UpdateExpiresDateController extends Controller
 {
@@ -15,12 +16,16 @@ class UpdateExpiresDateController extends Controller
             return ['type' => 'error','msg' => 'Não foi encontrado nenhum registro'];
         }
 
-        $response = Http::get('https://rdap.org/domain/'.$record->name);
+        try{
+            $response = Http::get('https://rdap.org/domain/'.$record->name);
+        } catch(\Exception $e){
+            Log::error($e->getMessage());
+            return ['type' => 'error','msg' => "Não foi possível verificar domínio, tente novamente!"];
+        }
 
         $expiresDate = null;
         if(!$response->json()){
-
-            return ['type' => 'error','msg' => 'Verifique se o domínio é existente!'];
+            return ['type' => 'error','msg' => 'Não foi possível verificar domínio, tente novamente!'];
         }
 
         if(!$record->register_account){

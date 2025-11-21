@@ -51,7 +51,8 @@ class HostingProvidersResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),

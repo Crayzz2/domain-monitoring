@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\HostingResource\Pages\ListHostings;
 use App\Models\Configuration;
 use App\Models\Hosting;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -21,14 +22,14 @@ class HostingExpirationWidget extends BaseWidget
                 return Hosting::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addDays((integer)$default_days)->format('Y-m-d'))
                     ->where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
                     ->count();
-            }),
+            })->url(route(ListHostings::getRouteName())),
             Stat::make(__('Active Hostings'), function(){
                 return Hosting::where('expiration_date', '>=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))->count();
-            }),
+            })->url(route(ListHostings::getRouteName())),
             Stat::make(__('Expired Hostings'), function(){
                 return Hosting::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))
                     ->count();
-            }),
+            })->url(route(ListHostings::getRouteName())),
         ];
     }
 }

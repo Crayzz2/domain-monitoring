@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\DomainResource\Pages\ListDomains;
 use App\Models\Configuration;
 use App\Models\Domain;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
@@ -21,15 +22,15 @@ class DomainExpirationWidget extends BaseWidget
                 return Domain::where('expiration_date', '<=' ,now('America/Sao_Paulo')->addDays((integer)$default_days)->format('Y-m-d'))
                     ->where('expiration_date', '>' ,now('America/Sao_Paulo')->format('Y-m-d'))
                     ->count();
-            }),
+            })->url(route(ListDomains::getRouteName())),
             Stat::make(__('Active Domains'), function(){
                 return Domain::where('expiration_date', '>=' ,now('America/Sao_Paulo')->addMonths(3)->format('Y-m-d'))
                     ->count();
-            }),
+            })->url(route(ListDomains::getRouteName())),
             Stat::make(__('Expired Domains'), function(){
                 return Domain::where('expiration_date', '<' ,now('America/Sao_Paulo')->format('Y-m-d'))
                     ->count();
-            }),
+            })->url(route(ListDomains::getRouteName())),
         ];
     }
 }

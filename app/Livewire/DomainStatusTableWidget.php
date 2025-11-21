@@ -25,18 +25,12 @@ class DomainStatusTableWidget extends BaseWidget
     {
         return $table
             ->query(
-                Domain::query()
+                Domain::query()->orderBy('expiration_date')
             )
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Name'))
-                    ->color(
-                        fn($record)=>
-                            Domain::where('id', $record->id)
-                                ->pluck('expiration_date')
-                                ->first() <
-                            now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null
-                    )
+                    ->color(fn($record)=> $record->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? 'danger' : null)
                     ->searchable(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))

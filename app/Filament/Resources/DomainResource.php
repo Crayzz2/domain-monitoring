@@ -148,6 +148,13 @@ class DomainResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Domain'))
                     ->searchable()
+                    ->color(function($record){
+                        if(!$record->expiration_date)  return null;
+                        if($record->expiration_date < now('America/Sao_Paulo')->format('Y-m-d')){
+                            return 'danger';
+                        }
+                        return null;
+                    })
                     ->sortable()
                     ->url(fn($state)=>"https://" . $state, true),
                 Tables\Columns\TextColumn::make('client.name')
@@ -172,6 +179,7 @@ class DomainResource extends Resource
                     ->boolean()
                     ->sortable(),
             ])
+            ->defaultSort('expiration_date')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

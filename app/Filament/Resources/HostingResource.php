@@ -108,7 +108,15 @@ class HostingResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('client.name')
                     ->label(__('Client'))
-                    ->sortable(),
+                    ->color(function($record){
+                        if(!$record->expiration_date)  return null;
+                        if($record->expiration_date < now('America/Sao_Paulo')->format('Y-m-d')){
+                            return 'danger';
+                        }
+                        return null;
+                    })
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('expiration_date')
                     ->label(__('Expiration Date'))
                     ->date('d/m/Y')
@@ -119,6 +127,7 @@ class HostingResource extends Resource
                 Tables\Columns\TextColumn::make('hosting_providers.name')
                     ->label(__('Hosting Provider')),
             ])
+            ->defaultSort('expiration_date')
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])

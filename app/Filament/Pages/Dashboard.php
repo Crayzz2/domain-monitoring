@@ -11,6 +11,7 @@ class Dashboard extends \Filament\Pages\Dashboard
                 ->icon('heroicon-o-arrow-down-tray')
                 ->label(__('Summary'))
                 ->url('/print')
+                ->openUrlInNewTab()
                 ->hidden(fn()=>!auth()->user()->hasAnyRole(['Super Admin', 'Painel de Controle', "Listar", 'Editar'])),
         ];
     }

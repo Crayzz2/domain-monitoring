@@ -66,21 +66,6 @@
             color: #6b7280;
             margin-top: 8px;
         }
-
-        /*.logo-container{*/
-        /*    width: 100%;*/
-        /*    text-align: left;*/
-        /*    background-color: #0b63b8;*/
-        /*}*/
-
-        /*.logo{*/
-        /*    max-height: 80px;*/
-        /*    background-color: #0f172a;*/
-        /*}*/
-
-        /*.company-name{*/
-        /*    background-color: #0f172a;*/
-        /*}*/
         .logo-container {
              width: 100%;
              display: table;
@@ -135,9 +120,9 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->get() as $domain)
+        @foreach(\App\Models\Domain::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get() as $domain)
             <tr>
-                <td>{{ $domain->name }}</td>
+                <td style="{{$domain->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $domain->name }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($domain->expiration_date)->format('d/m/Y') }}</td>
                 <td>{{ $domain->client_id ? $domain->client->name : '' }}</td>
             </tr>
@@ -154,9 +139,9 @@
         </tr>
         </thead>
         <tbody>
-        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->get() as $hosting)
+        @foreach(\App\Models\Hosting::where('expiration_date', '<', now('America/Sao_Paulo')->addDays((integer)App\Models\Configuration::first()?->summary_default_interval_days ?? 90))->orderBy('expiration_date')->get() as $hosting)
             <tr>
-                <td>{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
+                <td style="{{$hosting->expiration_date < now('America/Sao_Paulo')->format('Y-m-d') ? "color: red;" : "color: black;"}}">{{ $hosting->client_id ? $hosting->client->name : '' }}</td>
                 <td class="nowrap">{{ \Carbon\Carbon::parse($hosting->expiration_date)->format('d/m/Y') }}</td>
             </tr>
         @endforeach
