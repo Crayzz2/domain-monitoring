@@ -15,7 +15,7 @@ class ListHostings extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->modalWidth('md')
+                ->modalWidth('2xl')
                 ->mutateFormDataUsing(function($data){
                     if($data['host_password']){
                         $password = Crypt::encrypt($data['host_password']);

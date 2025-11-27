@@ -72,7 +72,42 @@ class HostingResource extends Resource
                 Forms\Components\Select::make('client_id')
                     ->label(__('Client'))
                     ->options(Client::pluck('name', 'id'))
-                    ->required(),
+                    ->required()
+                    ->searchable()
+                    ->live()
+                    ->suffixAction(
+                        Forms\Components\Actions\Action::make('create')
+                            ->icon('heroicon-o-plus')
+                            ->form([
+                                Forms\Components\TextInput::make('name')
+                                    ->label(__('Enterprise'))
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('responsible_name')
+                                    ->label(__('Responsible Name'))
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('phone')
+                                    ->label(__('Phone'))
+                                    ->mask('(99) 99999-9999')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Forms\Components\TextInput::make('email')
+                                    ->label(__('Email'))
+                                    ->email()
+                                    ->columnSpanFull(),
+                            ])
+                            ->modalWidth('md')
+                            ->action(function ($data, $set){
+                                $client = Client::create([
+                                    "name" => $data['name'],
+                                    "responsible_name" => $data['responsible_name'],
+                                    "email" => $data['email'],
+                                    "phone" => $data['phone'],
+                                ]);
+                                $set('client_id', $client->id);
+                            })
+                    ),
                 Forms\Components\DatePicker::make('expiration_date')
                     ->label(__('Expiration Date')),
                 Forms\Components\TextInput::make('host_user')
