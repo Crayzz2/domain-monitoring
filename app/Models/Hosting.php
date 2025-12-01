@@ -12,11 +12,10 @@ class Hosting extends Model
     protected $fillable = [
         'client_id',
         'expiration_date',
-        'is_third_party',
-        'hosting_providers_id',
         'host_user',
         'host_password',
-        'status'
+        'status',
+        'value'
     ];
 
     public function hosting_providers()

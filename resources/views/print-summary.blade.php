@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Resumo {{\App\Models\Configuration::first()?->summary_default_interval_days ?? 90}} dias</title>
     <style>
-        /* CSS simples compatível com DomPDF */
         html, body {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 12px;

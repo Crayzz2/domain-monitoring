@@ -12,12 +12,14 @@ use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 
 class HostingResource extends Resource
 {
@@ -109,7 +111,8 @@ class HostingResource extends Resource
                             })
                     ),
                 Forms\Components\DatePicker::make('expiration_date')
-                    ->label(__('Expiration Date')),
+                    ->label(__('Expiration Date'))
+                    ->required(),
                 Forms\Components\TextInput::make('host_user')
                     ->label(__('Username')),
                 Forms\Components\TextInput::make('host_password')
@@ -117,16 +120,15 @@ class HostingResource extends Resource
                     ->password()
                     ->revealable()
                     ->formatStateUsing(fn($state)=>$state ? Crypt::decrypt($state) : ''),
-                Forms\Components\Toggle::make('is_third_party')
-                    ->label(__('Third Party Hosting'))
-                    ->inline(false)
-                    ->live(),
-                Forms\Components\Select::make('hosting_providers_id')
-                    ->label(__('Hosting Provider'))
-                    ->options(HostingProviders::pluck('name', 'id')),
+//                Forms\Components\Toggle::make('is_third_party')
+//                    ->label(__('Third Party Hosting'))
+//                    ->inline(false)
+//                    ->live(),
+//                Forms\Components\Select::make('hosting_providers_id')
+//                    ->label(__('Hosting Provider'))
+//                    ->options(HostingProviders::pluck('name', 'id')),
                 Forms\Components\Select::make('status')
                     ->label(__('Status'))
-                    ->columnSpanFull()
                     ->options([
                         'financial_informed' => 'Informado ao financeiro',
                         'charge_sent' => 'Cobrança enviada',
@@ -134,6 +136,8 @@ class HostingResource extends Resource
                         'paid' => 'Pago',
                         'dont_renew' => 'Não Renovar'
                     ]),
+               Money::make('value')
+                    ->label(__('Value')),
             ]);
     }
 
@@ -156,11 +160,14 @@ class HostingResource extends Resource
                     ->label(__('Expiration Date'))
                     ->date('d/m/Y')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_third_party')
-                    ->label(__('Third Party Hosting'))
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('hosting_providers.name')
-                    ->label(__('Hosting Provider')),
+                Tables\Columns\TextColumn::make('value')
+                    ->label(__('Value'))
+                    ->money('BRL'),
+//                Tables\Columns\IconColumn::make('is_third_party')
+//                    ->label(__('Third Party Hosting'))
+//                    ->boolean(),
+//                Tables\Columns\TextColumn::make('hosting_providers.name')
+//                    ->label(__('Hosting Provider')),
             ])
             ->defaultSort('expiration_date')
             ->filters([

@@ -17,6 +17,7 @@ class HostingProvidersResource extends Resource
 {
     protected static ?string $model = HostingProviders::class;
 
+    protected static bool $shouldRegisterNavigation = false;
     protected static ?string $navigationIcon = 'heroicon-m-bars-3-bottom-right';
 
     public static function getNavigationGroup(): ?string

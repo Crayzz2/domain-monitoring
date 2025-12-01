@@ -20,7 +20,26 @@ class PrintSummaryController extends Controller
             ->setPaper('a4')
             ->setOption('isHtml5ParserEnabled', true);
 
-        return $pdf->stream('invoice.pdf'); // To view in browser
-//        return $pdf->download('relatório.pdf'); // To force download
+        return $pdf->stream('invoice.pdf');
+    }
+
+    public function printExpired(Request $request)
+    {
+        $logo = Configuration::first()?->company_logo;
+        $logoPath = $logo ? 'file://' . public_path('storage/' . $logo) : null;
+
+        if(!$request->route('slug')){
+            $type = "all";
+        } else if($request->route('slug') == 'domain'){
+            $type = "domain";
+        } else if($request->route('slug') == 'hosting'){
+            $type = "hosting";
+        }
+
+        $pdf = Pdf::loadView('print-expired-summary', ['logo' => $logoPath, 'type' => $type])
+            ->setPaper('a4')
+            ->setOption('isHtml5ParserEnabled', true);
+
+        return $pdf->stream('invoice.pdf');
     }
 }
