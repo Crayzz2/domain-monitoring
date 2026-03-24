@@ -50,11 +50,6 @@ class HostingStatusTableWidget extends BaseWidget implements HasForms, HasAction
                         'paid' => 'Pago',
                         'dont_renew' => 'Não Renovar'
                     ])
-                    ->afterStateUpdated(function($record){
-                        if ($record->status == 'dont_renew'){
-                            $record->delete();
-                        }
-                    })
                     ->sortable()
                 ,
             ])

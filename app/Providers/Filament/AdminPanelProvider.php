@@ -66,7 +66,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label('General'),
+                    ->label(fn (): string => __('General')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('Hosting/Domain')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('Social')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('Alerts')),
+                NavigationGroup::make()
+                    ->label(fn (): string => __('Roles And Permissions')),
                 NavigationGroup::make()
                     ->label(fn (): string => __('Settings')),
             ])

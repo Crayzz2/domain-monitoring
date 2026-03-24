@@ -22,6 +22,12 @@ return [
         'key' => env('RESEND_KEY'),
     ],
 
+    'evolution' => [
+        'key' => env('API_KEY_EVOLUTION'),
+        'url' => env('URL_API_EVOLUTION'),
+        'type' => env('INTEGRATION_TYPE_EVOLUTION')
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

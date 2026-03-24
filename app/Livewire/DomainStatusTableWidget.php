@@ -49,8 +49,6 @@ class DomainStatusTableWidget extends BaseWidget
                         if($record->status == "paid"){
                             $update = new UpdateExpiresDateController();
                             $update->update($record);
-                        } else if ($record->status == 'dont_renew'){
-                            $record->delete();
                         }
                     })
                     ->sortable(),

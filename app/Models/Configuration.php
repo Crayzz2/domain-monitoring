@@ -19,6 +19,16 @@ class Configuration extends Model
         'company_name',
         'company_logo',
         'domain_default_message',
-        'hosting_default_message'
+        'hosting_default_message',
+        'send_alerts',
+        'internal_alert_message_level_one',
+        'internal_alert_message_level_two',
+        'internal_alert_message_level_three',
+        'internal_alert_message_level_four',
+        'client_alert_message_level_one',
+        'client_alert_message_level_two',
+        'client_alert_message_level_three',
+        'instance_uuid',
+        'instance_status',
     ];
 }
