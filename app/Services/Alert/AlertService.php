@@ -50,7 +50,7 @@ class AlertService
         $evo = new EvolutionService;
         $config = Configuration::first();
 
-        if($config->instance_status == 'open'){
+        if($config->instance_status == 'open' && $config->send_alerts){
             $evo->sendText($recipient, $message);
         }
     }
