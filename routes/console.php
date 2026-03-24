@@ -104,6 +104,6 @@ Schedule::call(function(){
                     );
                 }
             }
-        } catch (Exception $e){}
+	} catch (Exception $e){}
     });
 })->hourly();
