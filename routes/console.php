@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Schedule;
 use Illuminate\Support\Str;
 use Resend\Laravel\Facades\Resend;
 use Carbon\Carbon;
+use App\Services\Alert\AlertService;
 
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
@@ -107,3 +108,10 @@ Schedule::call(function(){
         } catch (Exception $e){}
     });
 })->hourly();
+
+Schedule::call(function(){
+    if(Configuration::first()->send_alerts){
+        $alert = new AlertService;
+        $alert->invoke();
+    }
+})->daily();
