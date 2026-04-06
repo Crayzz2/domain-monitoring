@@ -18,6 +18,7 @@ class UpdateExpiresDateController extends Controller
 
         try{
             $response = Http::get('https://rdap.org/domain/'.$record->name);
+            sleep(5);
         } catch(\Exception $e){
             Log::error($e->getMessage());
             return ['type' => 'error','msg' => "Não foi possível verificar domínio, tente novamente!"];
