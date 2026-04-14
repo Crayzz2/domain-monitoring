@@ -12,6 +12,9 @@ use Illuminate\Support\Str;
 
 class AlertService
 {
+
+    const INTERNAL = 'internal';
+    const CLIENT = 'client';
     public function invoke()
     {
         HostingAlert::all()->each(function (HostingAlert $alert) {
@@ -45,13 +48,18 @@ class AlertService
         $this->second_step();
         $this->third_step();
     }
-    protected function send_alert($recipient, $message)
+    protected function send_alert($recipient_type, $recipient, $message)
     {
         $evo = new EvolutionService;
         $config = Configuration::first();
 
-        if($config->instance_status == 'open' && $config->send_alerts){
-            $evo->sendText($recipient, $message);
+        if($config->instance_status == 'open'){
+            if($recipient_type == self::CLIENT && $config->send_client_alerts){
+                $evo->sendText($recipient, $message);
+            }
+            if($recipient_type == self::INTERNAL && $config->send_internal_alerts){
+                $evo->sendText($recipient, $message);
+            }
         }
     }
 
@@ -84,10 +92,10 @@ class AlertService
 
                 $internal_message = Str::replace('{cliente}', $hosting->client->name, $config->internal_alert_message_level_one);
 
-                $this->send_alert($this->format_phone($hosting->client->phone), $client_message);
+                $this->send_alert(self::CLIENT ,$this->format_phone($hosting->client->phone), $client_message);
 
                 Phone::where('send_alert', true)->each(function($phone) use ($internal_message){
-                    $this->send_alert($this->format_phone($phone->number), $internal_message);
+                    $this->send_alert(self::INTERNAL ,$this->format_phone($phone->number), $internal_message);
                 });
             }
         }
@@ -111,10 +119,10 @@ class AlertService
 
                 $internal_message = Str::replace('{cliente}', $hosting->client->name, $config->internal_alert_message_level_two);
 
-                $this->send_alert($this->format_phone($hosting->client->phone), $client_message);
+                $this->send_alert(self::CLIENT ,$this->format_phone($hosting->client->phone), $client_message);
 
                 Phone::where('send_alert', true)->each(function($phone) use ($internal_message){
-                    $this->send_alert($this->format_phone($phone->number), $internal_message);
+                    $this->send_alert(self::INTERNAL ,$this->format_phone($phone->number), $internal_message);
                 });
             }
         }
@@ -138,10 +146,10 @@ class AlertService
 
                 $internal_message = Str::replace('{cliente}', $hosting->client->name, $config->internal_alert_message_level_three);
 
-                $this->send_alert($this->format_phone($hosting->client->phone), $client_message);
+                $this->send_alert(self::CLIENT ,$this->format_phone($hosting->client->phone), $client_message);
 
                 Phone::where('send_alert', true)->each(function($phone) use ($internal_message){
-                    $this->send_alert($this->format_phone($phone->number), $internal_message);
+                    $this->send_alert(self::INTERNAL ,$this->format_phone($phone->number), $internal_message);
                 });
             }
         }
@@ -163,7 +171,7 @@ class AlertService
                 $internal_message = Str::replace('{cliente}', $hosting->client->name, $config->internal_alert_message_level_four);
 
                 Phone::where('send_alert', true)->each(function($phone) use ($internal_message){
-                    $this->send_alert($this->format_phone($phone->number), $internal_message);
+                    $this->send_alert(self::INTERNAL ,$this->format_phone($phone->number), $internal_message);
                 });
             }
         }

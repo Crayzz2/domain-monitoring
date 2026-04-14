@@ -81,8 +81,6 @@ Schedule::call(function(){
 })->everySixHours();
 
 Schedule::call(function(){
-    if(Configuration::first()->send_alerts){
-        $alert = new AlertService;
-        $alert->invoke();
-    }
+    $alert = new AlertService;
+    $alert->invoke();
 })->daily();

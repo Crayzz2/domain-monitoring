@@ -93,5 +93,6 @@
     "Hosting Alert": "Alerta de Hospedagem",
     "Hosting Alerts": "Alertas de Hospedagem",
     "Roles And Permissions": "Funções e Permissões",
-    "Send Hosting Alerts": "Enviar Alertas de Hospedagem"
+    "Send Internal Hosting Alerts": "Enviar Alertas de Hospedagem Interno",
+    "Send Client Hosting Alerts": "Enviar Alertas de Hospedagem Clientes"
 }

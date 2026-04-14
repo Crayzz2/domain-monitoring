@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
         Configuration::updateOrCreate(
             ['id'=>1],
             [
-                'default_color' => '#c084fc',
                 'domain_default_filter_days' => 90,
                 'hosting_default_filter_days' => 90,
                 'summary_default_interval_days' => 90

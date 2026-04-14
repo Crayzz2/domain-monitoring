@@ -151,11 +151,10 @@ class ConfigurationPage extends Page implements HasForms
                         ]),
                 ])->columns(2),
 
-                Forms\Components\Toggle::make('send_alerts')
-                    ->label(__('Send Hosting Alerts')),
-
                 Forms\Components\Section::make([
                     Forms\Components\Group::make([
+                        Forms\Components\Toggle::make('send_internal_alerts')
+                            ->label(__('Send Internal Hosting Alerts')),
                         Forms\Components\MarkdownEditor::make('internal_alert_message_level_one')
                             ->label(__('Internal Alert Message Level One'))
                             ->hintActions([
@@ -182,6 +181,8 @@ class ConfigurationPage extends Page implements HasForms
                             ]),
                     ])->columns(1),
                     Forms\Components\Group::make([
+                        Forms\Components\Toggle::make('send_client_alerts')
+                            ->label(__('Send Client Hosting Alerts')),
                         Forms\Components\MarkdownEditor::make('client_alert_message_level_one')
                             ->label(__('Client Alert Message Level One'))
                             ->hintActions([
