@@ -24,6 +24,7 @@ class ListDomains extends ListRecords
             Actions\Action::make('update_all')
                 ->label(__('Update All'))
                 ->action(function(){
+                    set_time_limit(0);
                     foreach(Domain::all() as $domain){
                         $update = new UpdateExpiresDateController();
                         $update_activity = new ActivityStatusController();

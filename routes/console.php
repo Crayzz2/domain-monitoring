@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Domain;
 use App\Models\Configuration;
 use App\Models\Hosting;
+use App\Services\Alert\ActivityAlertService;
 use Filament\Notifications\Notification;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -15,10 +16,6 @@ use Illuminate\Support\Str;
 use Resend\Laravel\Facades\Resend;
 use Carbon\Carbon;
 use App\Services\Alert\AlertService;
-
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
 
 Schedule::call(function(){
     $configuration = Configuration::first();
@@ -76,38 +73,12 @@ Schedule::call(function(){
         'subject' => 'Relatório dos próximos '.$days.' dias',
         'html' => Str::squish($html)
     ]);
-})->days(15);
+})->twiceMonthly(1, 16, '00:00');
 
 Schedule::call(function(){
-    $users = User::role(['Super Admin'])->get();
-
-    Domain::get()->each(function($domain) use ($users){
-        try{
-            $activity_controller = new ActivityStatusController();
-
-            $old_status = $domain->activity_status;
-
-            $update = $activity_controller->update($domain);
-
-            if($update['type'] == "error"){
-                if($old_status != $domain->activity_status){
-                    $title = "Novo site inativo ou fora do ar, favor verificar!";
-                } else {
-                    $title = "Site inativo ou fora do ar";
-                }
-                foreach($users as $user){
-                    $user->notify(
-                        Notification::make('error')
-                            ->danger()
-                            ->title($title)
-                            ->body($domain->name)
-                            ->toDatabase()
-                    );
-                }
-            }
-	} catch (Exception $e){}
-    });
-})->hourly();
+    $activityAlert = new ActivityAlertService();
+    $activityAlert->invoke();
+})->everySixHours();
 
 Schedule::call(function(){
     if(Configuration::first()->send_alerts){

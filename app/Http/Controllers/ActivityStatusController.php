@@ -17,6 +17,7 @@ class ActivityStatusController extends Controller
 
         try{
             $response = Http::head("https://".$record->name);
+            sleep(5);
         } catch (\Exception $e){
             $record->activity_status = false;
             $record->save();
